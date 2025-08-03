@@ -1,0 +1,8 @@
+# dirs
+/out
+/.cache
+
+# compilation
+compile_commands.json
+
+dot-matrix
