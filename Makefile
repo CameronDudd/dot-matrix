@@ -19,3 +19,6 @@ out:
 
 clean:
 	rm -rf out $(TARGET)
+
+cloc:
+	cloc --md src include
