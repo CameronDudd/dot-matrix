@@ -1,24 +1,40 @@
-C = gcc 
-CFLAGS = -Wall -Wextra -g -std=c99 -Iinclude
-LIBS = -lSDL2
+C       = arm-none-eabi-gcc
+C_OBJ   = arm-none-eabi-objcopy
+ST_FLASH = st-flash
 
-SRC = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c, out/%.o, $(SRC))
-TARGET = dot-matrix
+CFLAGS = -DSTM32F401xE \
+         -Wall -Wextra -g -std=c99 \
+         -nostartfiles -nostdlib -ffreestanding \
+         -mthumb -mcpu=cortex-m4 \
+         -Iinclude \
+         -Ilib/STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
+         -Ilib/STM32CubeF4/Drivers/CMSIS/Include \
+         -Tlinker.ld
 
-all: $(TARGET)
+SRC     = $(wildcard src/*.c)
+OBJ     = $(patsubst src/%.c, bin/%.o, $(SRC))
+TARGET  = main.elf
+BIN     = main.bin
+
+all: $(BIN)
 
 $(TARGET): $(OBJ)
-	$(C) -o $@ $^ $(LIBS)
+	$(C) $(CFLAGS) -o $@ $^
 
-out/%.o: src/%.c | out
+bin/%.o: src/%.c | bin
 	$(C) $(CFLAGS) -c $< -o $@
 
-out:
-	mkdir -p out
+bin:
+	mkdir -p bin
+
+$(BIN): $(TARGET)
+	$(C_OBJ) -O binary $< $@
+
+flash: $(BIN)
+	$(ST_FLASH) write $(BIN) 0x8000000
 
 clean:
-	rm -rf out $(TARGET)
+	rm -rf bin $(TARGET) $(BIN)
 
 cloc:
 	cloc --md src include
