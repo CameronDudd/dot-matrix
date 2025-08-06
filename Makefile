@@ -29,7 +29,7 @@ bin:
 
 $(BIN): $(TARGET)
 	$(C_OBJ) -O binary $< $@
-	rm $@
+	rm $<
 
 flash: $(BIN)
 	$(ST_FLASH) write $(BIN) 0x8000000
