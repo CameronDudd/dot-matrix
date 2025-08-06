@@ -1,0 +1,21 @@
+#ifndef PIN_DEFS_H
+#define PIN_DEFS_H
+
+#include "gpio.h"
+
+#define MATRIX_CLK GPIO_PIN_PA5
+#define MATRIX_E   GPIO_PIN_PA6
+#define MATRIX_D   GPIO_PIN_PA7
+#define MATRIX_B2  GPIO_PIN_PA8
+#define MATRIX_A   GPIO_PIN_PA9
+#define MATRIX_R1  GPIO_PIN_PA10
+#define MATRIX_G1  GPIO_PIN_PB3
+#define MATRIX_R2  GPIO_PIN_PB4
+#define MATRIX_B1  GPIO_PIN_PB5
+#define MATRIX_C   GPIO_PIN_PB6
+#define MATRIX_OE  GPIO_PIN_PB8 GPIO_PIN_PB8
+#define MATRIX_LAT GPIO_PIN_PB9
+#define MATRIX_G2  GPIO_PIN_PB10
+#define MATRIX_B   GPIO_PIN_PC7
+
+#endif  // PIN_DEFS_H
