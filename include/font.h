@@ -6,7 +6,8 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <bits/stdint-uintn.h>
+#include <stdint.h>
+
 #define TEST_STR " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 
 typedef struct {
