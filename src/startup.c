@@ -1,4 +1,11 @@
+/*
+ *   Copyright (c) 2024 Cameron Dudd
+ *   All rights reserved.
+ */
+
 #include <stdint.h>
+
+#include "time.h"
 
 extern uint32_t _stack;
 extern uint32_t _data_loadaddr, _data, _edata;
@@ -11,7 +18,7 @@ __attribute__((section(".vectors"))) void (*const vector_table[])(void) = {
     (void (*)(void))(&_stack),
     reset_handler,
     default_handler,
-    default_handler,
+    [15] = SysTick_Handler,
 };
 
 void reset_handler(void) {
