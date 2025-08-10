@@ -3,7 +3,7 @@ C_OBJ   = arm-none-eabi-objcopy
 ST_FLASH = st-flash
 
 CFLAGS = -DSTM32F401xE \
-         -Wall -Wextra -g -std=c99 \
+         -Wall -Wextra -g -std=c99 -O3 \
          -nostartfiles -nostdlib -ffreestanding \
          -mthumb -mcpu=cortex-m4 \
          -Iinclude \
