@@ -8,8 +8,10 @@ CFLAGS = -DSTM32F401xE \
          -mthumb -mcpu=cortex-m4 \
          -Iinclude \
          -Ilib/STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
-         -Ilib/STM32CubeF4/Drivers/CMSIS/Include \
-         -Tlinker.ld
+         -Ilib/STM32CubeF4/Drivers/CMSIS/Include
+
+LDFLAGS = -Tlinker.ld \
+          -nostdlib -nodefaultlibs -nostartfiles -Wl,--gc-sections
 
 SRC     = $(wildcard src/*.c)
 OBJ     = $(patsubst src/%.c, bin/%.o, $(SRC))
@@ -19,7 +21,7 @@ BIN     = main.bin
 all: $(BIN)
 
 $(TARGET): $(OBJ)
-	$(C) $(CFLAGS) -o $@ $^
+	$(C) $(LDFLAGS) -o $@ $^
 
 bin/%.o: src/%.c | bin
 	$(C) $(CFLAGS) -c $< -o $@
