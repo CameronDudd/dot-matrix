@@ -1,19 +1,39 @@
-#include "stm32f401xe.h"
+#include <stdint.h>
 
-static void delay(volatile uint32_t count) {
-  while (count--) {
-    __asm__ volatile("nop");
-  }
-}
+#include "color.h"
+#include "gpio.h"
+#include "time.h"
 
 int main(void) {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+  RGBColor1 _buff[64][64];
+  for (uint8_t row = 0; row < 64; ++row) {
+    for (uint8_t col = 0; col < 64; ++col) {
+      _buff[row][col].r = (col % 2) ? 1 : 0;
+      _buff[row][col].g = ((col % 2) && (row % 2)) ? 1 : 0;
+      _buff[row][col].b = 0;
+    }
+  }
 
-  GPIOA->MODER &= ~(3u << (5 * 2));
-  GPIOA->MODER |= (1u << (5 * 2));
+  systickInit(16000000);
+  gpioInit();
+  sleepMs(1000);
 
   while (1) {
-    GPIOA->ODR ^= (1u << 5);
-    delay(1000000);
+    for (uint8_t row = 0; row < 32; ++row) {
+      outputDisable();
+
+      selectRow(row);
+
+      for (uint8_t col = 0; col < 64; ++col) {
+        setColorLines(_buff[row][col], 0);
+        setColorLines(_buff[row + 32][col], 1);
+        clock();
+      }
+
+      latch();
+      outputEnable();
+      sleepMs(1);
+    }
   }
+  return 0;
 }
