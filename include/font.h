@@ -19,6 +19,6 @@ typedef struct {
 
 extern Font simpleFont;
 
-int charUnsupported(uint16_t map);
+int charUnsupported(uint16_t charMap);
 
 #endif  // FONT_H
