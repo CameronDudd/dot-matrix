@@ -4,5 +4,10 @@
 
 # compilation
 compile_commands.json
+**/*.o
+**/*.bin
 
 dot-matrix
+
+# backup
+**/*.bak
