@@ -16,6 +16,6 @@ void outputDisable(void);
 void clock(void);
 void latch(void);
 void selectRow(uint8_t row);
-void setColorLines(const RGBColor1 color, const uint8_t top);
+void setColorLines(const RGBColor1 color, const uint8_t bottom);
 
 #endif  // GPIO_H

@@ -96,8 +96,8 @@ void selectRow(uint8_t row) {
   if ((row >> 4) & 1u) GPIOA->ODR |= MATRIX_E;
 }
 
-void setColorLines(const RGBColor1 color, const uint8_t top) {
-  if (top) {
+void setColorLines(const RGBColor1 color, const uint8_t bottom) {
+  if (!bottom) {
     // clear lines
     GPIOA->ODR &= ~MATRIX_R1;
     GPIOB->ODR &= ~(MATRIX_G1 | MATRIX_B1);
