@@ -1,6 +1,7 @@
 ## Dot Matrix Project
 
 <img src="./assets/cover.png" width=50% height=50%>
+
 ![Thumbnail generated with Sora](https://img.shields.io/badge/Thumbnail_generated_with_Sora-blue?style=flat-square)
 
 ## Statistics
