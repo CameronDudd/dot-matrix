@@ -17,10 +17,10 @@ static void init(void) {
 
 int main(void) {
   init();
-  str2display(0, 0, "Hello, world!", RED);
-  str2display(7, 0, "Hello, world!", GREEN);
-  str2display(14, 0, "Hello, world!", BLUE);
-  str2display(21, 0, "Hello, world!", WHITE);
+  str2display(18, 7, "Hello, world!", RED);
+  str2display(25, 7, "Hello, world!", GREEN);
+  str2display(32, 7, "Hello, world!", BLUE);
+  str2display(39, 7, "Hello, world!", WHITE);
   while (1) {
     renderDisplay();
   }
