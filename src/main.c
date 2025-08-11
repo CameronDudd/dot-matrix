@@ -10,6 +10,7 @@
 
 static void init(void) {
   systickInit(16000000);
+  tim2Init(16000000);
   gpioInit();
   clearDisplay();
 }
