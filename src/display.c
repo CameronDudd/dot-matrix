@@ -68,6 +68,6 @@ void renderDisplay(void) {
     }
     latch();
     outputEnable();
-    sleepMs(1);
+    sleepUs(313);  // 313 us per row; 10016 us per frame; 99.84 frames per second
   }
 }
