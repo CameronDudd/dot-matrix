@@ -12,7 +12,13 @@
 #define GPIO_MODER_SET_OUTPUT(port, pin) ((port)->MODER |= (0x1 << ((pin) * 2)))
 #define GPIO_MODER_SET_INPUT(port, pin)  ((port)->MODER &= ~(0x3 << ((pin) * 2)))
 
+static int _gpioInitialised = 0;
+
 void gpioInit(void) {
+  if (_gpioInitialised) {
+    return;
+  }
+  _gpioInitialised = 1;
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
 
   // Clear mode bits
@@ -82,21 +88,21 @@ void gpioInit(void) {
   GPIOB->ODR |= MATRIX_OE;  // OE HIGH - DISPLAY OFF
 }
 
-void outputEnable(void) { GPIOB->ODR &= ~MATRIX_OE; }
+void gpioDisplayOutputEnable(void) { GPIOB->ODR &= ~MATRIX_OE; }
 
-void outputDisable() { GPIOB->ODR |= MATRIX_OE; }
+void gpioDisplayOutputDisable() { GPIOB->ODR |= MATRIX_OE; }
 
-void clock(void) {
+void gpioDisplayClock(void) {
   GPIOA->ODR |= MATRIX_CLK;
   GPIOA->ODR &= ~MATRIX_CLK;
 }
 
-void latch(void) {
+void gpioDisplayLatch(void) {
   GPIOB->ODR |= MATRIX_LAT;
   GPIOB->ODR &= ~MATRIX_LAT;
 }
 
-void selectRow(uint8_t row) {
+void gpioDisplaySelectRow(uint8_t row) {
   GPIOA->ODR &= ~(MATRIX_E | MATRIX_D | MATRIX_A);
   GPIOB->ODR &= ~MATRIX_C;
   GPIOC->ODR &= ~MATRIX_B;
@@ -107,7 +113,7 @@ void selectRow(uint8_t row) {
   if ((row >> 4) & 1u) GPIOA->ODR |= MATRIX_E;
 }
 
-void setColorLines(const RGBColor1 color, const uint8_t bottom) {
+void gpioDisplaySetColorLines(const RGBColor1 color, const uint8_t bottom) {
   if (!bottom) {
     // clear lines
     GPIOA->ODR &= ~MATRIX_R1;
@@ -126,3 +132,7 @@ void setColorLines(const RGBColor1 color, const uint8_t bottom) {
     if (color.b) GPIOA->ODR |= MATRIX_B2;
   }
 }
+
+void gpioHC05Enable(void) { GPIOA->ODR |= HC_05_EN; }
+
+void gpioHC05Disable(void) { GPIOA->ODR &= ~HC_05_EN; }

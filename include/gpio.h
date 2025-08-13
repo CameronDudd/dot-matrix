@@ -11,11 +11,17 @@
 #include "color.h"
 
 void gpioInit(void);
-void outputEnable(void);
-void outputDisable(void);
-void clock(void);
-void latch(void);
-void selectRow(uint8_t row);
-void setColorLines(const RGBColor1 color, const uint8_t bottom);
+
+// Display
+void gpioDisplayOutputEnable(void);
+void gpioDisplayOutputDisable(void);
+void gpioDisplayClock(void);
+void gpioDisplayLatch(void);
+void gpioDisplaySelectRow(uint8_t row);
+void gpioDisplaySetColorLines(const RGBColor1 color, const uint8_t bottom);
+
+// Bluetooth
+void gpioHC05Enable(void);
+void gpioHC05Disable(void);
 
 #endif  // GPIO_H
