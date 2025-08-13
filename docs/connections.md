@@ -1,5 +1,6 @@
 [WaveShare Docs](https://www.waveshare.com/wiki/RGB-Matrix-P2-64x64)
 
+64x64 WaveShare LED display
 | PIN     | Description       | 16PIN CABLE | STM32F401RE PIN |
 |---------|-------------------|-------------|-----------------|
 | GND     | Ground            | 1           | GND             |
@@ -18,3 +19,13 @@
 | G2      | G lower bit data  | 11          | PB10            |
 | B       | B line selection  | 7           | PC7             |
 | GND     | Ground            | 13          | GND             |
+
+HC-05
+| PIN     | Description       | STM32F401RE PIN |
+|---------|-------------------|-----------------|
+| STATE   |                   | PA13            |
+| RXD     |                   | PA3             |
+| TXD     |                   | PA2             |
+| GND     |                   | GND             |
+| VCC     |                   | 3.3             |
+| EN      |                   | PA14            |
