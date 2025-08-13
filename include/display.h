@@ -13,6 +13,7 @@
 
 extern RGBColor1 _buff[HEIGHT][WIDTH];
 
+void displayInit(void);
 void clearDisplay(void);
 void str2display(const int xpos, const int ypos, const char *str, const RGBColor1 *color);
 void renderDisplay(void);
