@@ -7,12 +7,16 @@
 #define PIN_DEFS_H
 
 // PORT A
-#define MATRIX_CLK (1u << 5)
-#define MATRIX_E   (1u << 6)
-#define MATRIX_D   (1u << 7)
-#define MATRIX_B2  (1u << 8)
-#define MATRIX_A   (1u << 9)
-#define MATRIX_R1  (1u << 10)
+#define HC_05_TXD   (1u << 2)
+#define HC_05_RXD   (1u << 3)
+#define MATRIX_CLK  (1u << 5)
+#define MATRIX_E    (1u << 6)
+#define MATRIX_D    (1u << 7)
+#define MATRIX_B2   (1u << 8)
+#define MATRIX_A    (1u << 9)
+#define MATRIX_R1   (1u << 10)
+#define HC_05_STATE (1u << 13)
+#define HC_05_EN    (1u << 14)
 
 // PORT B
 #define MATRIX_G1  (1u << 3)
