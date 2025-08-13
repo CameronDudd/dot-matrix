@@ -19,6 +19,7 @@ void gpioInit(void) {
     return;
   }
   _gpioInitialised = 1;
+
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
 
   // Clear mode bits
@@ -87,6 +88,8 @@ void gpioInit(void) {
   // set output disabled
   GPIOB->ODR |= MATRIX_OE;  // OE HIGH - DISPLAY OFF
 }
+
+void gpioToggleLED(void) { GPIOA->ODR ^= NUCLEO_LED; }
 
 void gpioDisplayOutputEnable(void) { GPIOB->ODR &= ~MATRIX_OE; }
 

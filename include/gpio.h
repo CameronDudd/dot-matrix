@@ -12,6 +12,9 @@
 
 void gpioInit(void);
 
+// On Board
+void gpioToggleLED(void);
+
 // Display
 void gpioDisplayOutputEnable(void);
 void gpioDisplayOutputDisable(void);
