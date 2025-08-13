@@ -34,7 +34,7 @@ $(BIN): $(TARGET)
 	rm $<
 
 flash: $(BIN)
-	$(ST_FLASH) write $(BIN) 0x8000000
+	$(ST_FLASH) --connect-under-reset write $(BIN) 0x8000000
 
 clean:
 	rm -rf bin $(TARGET) $(BIN)
