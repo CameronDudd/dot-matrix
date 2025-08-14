@@ -39,5 +39,8 @@ flash: $(BIN)
 clean:
 	rm -rf bin $(TARGET) $(BIN)
 
+paint:
+	cd lib/dot-matrix-paint; npm i; npm run dev
+
 cloc:
 	cloc --md src include
