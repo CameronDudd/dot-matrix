@@ -34,7 +34,6 @@ uint32_t epochMs(void) { return currentMs; }
 void sleepMs(uint32_t ms) {
   uint32_t startMs = currentMs;
   while ((currentMs - startMs) < ms) {
-    __WFI();
   }
 }
 
@@ -44,6 +43,5 @@ uint32_t epochUs(void) { return TIM2->CNT; }
 void sleepUs(uint32_t us) {
   uint32_t startUs = TIM2->CNT;
   while ((TIM2->CNT - startUs) < us) {
-    __WFI();
   }
 }
