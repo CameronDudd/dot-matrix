@@ -1,3 +1,6 @@
 [submodule "lib/STM32CubeF4"]
 	path = lib/STM32CubeF4
 	url = https://github.com/STMicroelectronics/STM32CubeF4.git
+[submodule "lib/dot-matrix-paint"]
+	path = lib/dot-matrix-paint
+	url = git@github.com:JackHicks02/dot-matrix-paint.git
