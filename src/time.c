@@ -28,6 +28,8 @@ void tim2Init(uint32_t clkHz) {
   TIM2->CR1 |= TIM_CR1_CEN;
 }
 
+uint32_t epochMs(void) { return currentMs; }
+
 // FIXME(cameron): don't accept unless systickInit called
 void sleepMs(uint32_t ms) {
   uint32_t startMs = currentMs;
@@ -35,6 +37,8 @@ void sleepMs(uint32_t ms) {
     __WFI();
   }
 }
+
+uint32_t epochUs(void) { return TIM2->CNT; }
 
 // FIXME(cameron): don't accept unless tim2Init called
 void sleepUs(uint32_t us) {
