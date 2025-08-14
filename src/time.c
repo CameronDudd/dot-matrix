@@ -12,6 +12,8 @@ volatile uint32_t currentMs = 0;
 void SysTick_Handler(void) { ++currentMs; }
 
 void systickInit(uint32_t clkHz) {
+  while (!(RCC->CR & RCC_CR_HSIRDY)) {
+  }
   SysTick->LOAD = (clkHz / 1000) - 1;
   SysTick->VAL  = 0;
   SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
