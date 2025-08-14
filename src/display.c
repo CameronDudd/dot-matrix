@@ -133,10 +133,9 @@ void int2display(const int row, const int col, uint32_t val, const RGBColor1 *co
   int curRow = row;
   int curCol = col;
   int mag    = 1;
-  while ((val / mag) > 0) {
+  while ((val / mag) > 1) {
     mag *= 10;
   }
-  mag /= 10;
   for (; mag > 0; mag /= 10) {
     c = val / mag;
     val -= (c * mag);
