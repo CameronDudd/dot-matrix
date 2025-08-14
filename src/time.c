@@ -24,6 +24,7 @@ void tim2Init(uint32_t clkHz) {
   TIM2->PSC = (clkHz / 1000000) - 1;
   TIM2->ARR = 0xFFFFFFFF;
   TIM2->CNT = 0;
+  TIM2->EGR = TIM_EGR_UG;
   TIM2->CR1 |= TIM_CR1_CEN;
 }
 
