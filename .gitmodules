@@ -4,6 +4,3 @@
 [submodule "lib/dot-matrix-paint"]
 	path = lib/dot-matrix-paint
 	url = git@github.com:JackHicks02/dot-matrix-paint.git
-[submodule "lib/b64"]
-	path = lib/b64
-	url = git@github.com:jwerle/b64.c.git
