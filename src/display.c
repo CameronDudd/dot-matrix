@@ -53,7 +53,26 @@ void displayInit(void) {
   GPIO_MODER_CLR(GPIOB, G2);
   // PORT C
   GPIO_MODER_CLR(GPIOC, B);
-  //
+
+  // Set mode bits
+  // PORT A
+  GPIO_MODER_SET_OUTPUT(GPIOA, CLK);
+  GPIO_MODER_SET_OUTPUT(GPIOA, E);
+  GPIO_MODER_SET_OUTPUT(GPIOA, D);
+  GPIO_MODER_SET_OUTPUT(GPIOA, B2);
+  GPIO_MODER_SET_OUTPUT(GPIOA, A);
+  GPIO_MODER_SET_OUTPUT(GPIOA, R1);
+  // PORT B
+  GPIO_MODER_SET_OUTPUT(GPIOB, G1);
+  GPIO_MODER_SET_OUTPUT(GPIOB, R2);
+  GPIO_MODER_SET_OUTPUT(GPIOB, B1);
+  GPIO_MODER_SET_OUTPUT(GPIOB, C);
+  GPIO_MODER_SET_OUTPUT(GPIOB, OE);
+  GPIO_MODER_SET_OUTPUT(GPIOB, LAT);
+  GPIO_MODER_SET_OUTPUT(GPIOB, G2);
+  // PORT C
+  GPIO_MODER_SET_OUTPUT(GPIOC, B);
+
   // clear RGB lines
   GPIOA->ODR &= ~((1u << B2) | (1u << R1));
   GPIOB->ODR &= ~((1u << G1) | (1u << R2) | (1u << B1) | (1u << G2));
@@ -152,16 +171,19 @@ static void _setColorLines(const RGBColor1 color, const uint8_t bottom) {
 void renderDisplay(void) {
   for (uint8_t row = 0; row < 32; ++row) {
     GPIOB->ODR |= (1u << OE);
+    // sleepUs(1);
     _selectRow(row);
     for (uint8_t col = 0; col < 64; ++col) {
       _setColorLines(_buff[row][col], 0);
       _setColorLines(_buff[row + 32][col], 1);
       GPIOA->ODR |= (1u << CLK);
+      // sleepUs(1);
       GPIOA->ODR &= ~(1u << CLK);
     }
     GPIOB->ODR |= (1u << LAT);
+    // sleepUs(1);
     GPIOB->ODR &= ~(1u << LAT);
     GPIOB->ODR &= ~(1u << OE);
-    sleepUs(313);  // 313 us per row; 10016 us per frame; 99.84 frames per second
+    sleepUs(1);  // 313 us per row; 10016 us per frame; 99.84 frames per second
   }
 }
