@@ -5,6 +5,8 @@
 
 #include "display.h"
 
+#include <stdint.h>
+
 #include "color.h"
 #include "font.h"
 #include "gpio.h"
@@ -104,32 +106,50 @@ void clearDisplay(void) {
   }
 }
 
+void char2display(const int col, const int row, const char c, const RGBColor1 *color) {
+  uint16_t charMap = simpleFont.map[(int)c];
+  if (charUnsupported(charMap)) {
+    charMap = simpleFont.map[0];
+  }
+  // If remainder of display cannot fit fast fail
+  if (((row + font->height) >= HEIGHT) || ((col + font->width) >= WIDTH)) {
+    return;
+  }
+  // Write character to buffer
+  for (int c = font->width - 1; c >= 0; --c) {
+    for (int r = font->height - 1; r >= 0; --r) {
+      int offset = ((font->width * font->height) - 1) - ((r * font->width) + c);
+      if ((charMap >> offset) & 1) {
+        _buff[row + r][col + c].r = color->r;
+        _buff[row + r][col + c].g = color->g;
+        _buff[row + r][col + c].b = color->b;
+      }
+    }
+  }
+}
+
+void int2display(const int row, const int col, uint32_t val, const RGBColor1 *color) {
+  char c;
+  int curRow = row;
+  int curCol = col;
+  int mag    = 1;
+  while ((val / mag) > 0) {
+    mag *= 10;
+  }
+  mag /= 10;
+  for (; mag > 0; mag /= 10) {
+    c = val / mag;
+    val -= (c * mag);
+    char2display(curCol, curRow, '0' + c, color);
+    curCol += (font->width + 1);
+  }
+}
+
 void str2display(const int row, const int col, const char *str, const RGBColor1 *color) {
   int curRow = row;
   int curCol = col;
   for (const char *c = str; *c != '\0'; ++c) {
-    uint16_t charMap = simpleFont.map[(int)(*c)];
-    if (charUnsupported(charMap)) {
-      charMap = simpleFont.map[0];
-    }
-
-    // If remainder of display cannot fit fast fail
-    if (((curRow + font->height) >= HEIGHT) || ((curCol + font->width) >= WIDTH)) {
-      break;
-    }
-
-    // Write character to buffer
-    for (int col = font->width - 1; col >= 0; --col) {
-      for (int row = font->height - 1; row >= 0; --row) {
-        int offset = ((font->width * font->height) - 1) - ((row * font->width) + col);
-        if ((charMap >> offset) & 1) {
-          _buff[curRow + row][curCol + col].r = color->r;
-          _buff[curRow + row][curCol + col].g = color->g;
-          _buff[curRow + row][curCol + col].b = color->b;
-        }
-      }
-    }
-
+    char2display(curCol, curRow, *c, color);
     if (*c != ' ') {
       curCol += font->width;
     }
@@ -171,19 +191,16 @@ static void _setColorLines(const RGBColor1 color, const uint8_t bottom) {
 void renderDisplay(void) {
   for (uint8_t row = 0; row < 32; ++row) {
     GPIOB->ODR |= (1u << OE);
-    // sleepUs(1);
     _selectRow(row);
     for (uint8_t col = 0; col < 64; ++col) {
       _setColorLines(_buff[row][col], 0);
       _setColorLines(_buff[row + 32][col], 1);
       GPIOA->ODR |= (1u << CLK);
-      // sleepUs(1);
       GPIOA->ODR &= ~(1u << CLK);
     }
     GPIOB->ODR |= (1u << LAT);
-    // sleepUs(1);
     GPIOB->ODR &= ~(1u << LAT);
     GPIOB->ODR &= ~(1u << OE);
-    sleepUs(1);  // 313 us per row; 10016 us per frame; 99.84 frames per second
+    sleepUs(313);  // 313 us per row; 10016 us per frame; 99.84 frames per second
   }
 }
