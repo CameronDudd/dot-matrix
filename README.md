@@ -7,9 +7,9 @@
 ## Statistics
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-C|7|57|54|353
-C/C++ Header|6|32|27|75
+C|8|77|63|503
+C/C++ Header|7|33|35|77
 --------|--------|--------|--------|--------
-SUM:|13|89|81|428
+SUM:|15|110|98|580
 
 [cloc](https://github.com/AlDanial/cloc)
