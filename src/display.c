@@ -7,11 +7,13 @@
 
 #include <stdint.h>
 
+#include "b64.h"
 #include "color.h"
 #include "font.h"
 #include "gpio.h"
 #include "stm32f401xe.h"
 #include "time.h"
+#include "usart.h"
 
 #define CLK 5
 #define E   6
@@ -32,7 +34,8 @@
 
 const Font *font = &simpleFont;
 
-RGBColor1 _buff[HEIGHT][WIDTH] = {0};
+unsigned char _dotBuff[512];
+RGBColor1 _colorDispBuff[HEIGHT][WIDTH];
 
 void displayInit(void) {
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
@@ -99,9 +102,9 @@ void displayInit(void) {
 void clearDisplay(void) {
   for (uint8_t row = 0; row < WIDTH; ++row) {
     for (uint8_t col = 0; col < HEIGHT; ++col) {
-      _buff[row][col].r = 0;
-      _buff[row][col].g = 0;
-      _buff[row][col].b = 0;
+      _colorDispBuff[row][col].r = 0;
+      _colorDispBuff[row][col].g = 0;
+      _colorDispBuff[row][col].b = 0;
     }
   }
 }
@@ -120,9 +123,9 @@ void char2display(const int col, const int row, const char c, const RGBColor1 *c
     for (int r = font->height - 1; r >= 0; --r) {
       int offset = ((font->width * font->height) - 1) - ((r * font->width) + c);
       if ((charMap >> offset) & 1) {
-        _buff[row + r][col + c].r = color->r;
-        _buff[row + r][col + c].g = color->g;
-        _buff[row + r][col + c].b = color->b;
+        _colorDispBuff[row + r][col + c].r = color->r;
+        _colorDispBuff[row + r][col + c].g = color->g;
+        _colorDispBuff[row + r][col + c].b = color->b;
       }
     }
   }
@@ -153,6 +156,22 @@ void str2display(const int row, const int col, const char *str, const RGBColor1 
       curCol += font->width;
     }
     curCol++;
+  }
+}
+
+void recvBuff2display(void) {
+  b64Decode(_dotBuff, (unsigned char *)recvBuff);
+  for (int row = 0; row < HEIGHT; ++row) {
+    for (int col = 0; col < WIDTH; ++col) {
+      int cell = (row * WIDTH) + col;
+      int idx  = cell / 8;
+      int bit  = cell % 8;
+      if (_dotBuff[idx] & (1u << bit)) {
+        _colorDispBuff[row][col].r = 1;
+        _colorDispBuff[row][col].g = 0;
+        _colorDispBuff[row][col].b = 0;
+      }
+    }
   }
 }
 
@@ -192,8 +211,8 @@ void renderDisplay(void) {
     GPIOB->ODR |= (1u << OE);
     _selectRow(row);
     for (uint8_t col = 0; col < 64; ++col) {
-      _setColorLines(_buff[row][col], 0);
-      _setColorLines(_buff[row + 32][col], 1);
+      _setColorLines(_colorDispBuff[row][col], 0);
+      _setColorLines(_colorDispBuff[row + 32][col], 1);
       GPIOA->ODR |= (1u << CLK);
       GPIOA->ODR &= ~(1u << CLK);
     }
