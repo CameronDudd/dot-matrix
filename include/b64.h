@@ -9,4 +9,4 @@
 void b64Encode(unsigned char *dst, const unsigned char *src);
 void b64Decode(unsigned char *dst, const unsigned char *src);
 
-#endif  // B64_h
+#endif  // B64_H
