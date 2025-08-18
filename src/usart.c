@@ -22,7 +22,8 @@ void Usart2GlobalInterrupt_Handler(void) {
     if ((_recvBuffPtr - recvBuff) >= RECV_BUFF_SIZE) {
       recvBuffComplete = 0;
       _recvBuffPtr     = recvBuff;
-    } else if (_c == '@') {
+    } else if (_c == '=') {
+      *_recvBuffPtr++  = _c;
       _recvBuffPtr     = recvBuff;
       recvBuffComplete = 1;
     } else {
