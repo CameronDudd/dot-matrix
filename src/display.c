@@ -32,10 +32,31 @@
 
 #define B 7
 
+#define CLK_Msk 0x20u
+#define E_Msk   0x40u
+#define D_Msk   0x80u
+#define B2_Msk  0x100u
+#define A_Msk   0x200u
+#define R1_Msk  0x400u
+
+#define G1_Msk  0x8u
+#define R2_Msk  0x10u
+#define B1_Msk  0x20u
+#define C_Msk   0x40u
+#define OE_Msk  0x100u
+#define LAT_Msk 0x200u
+#define G2_Msk  0x400u
+
+#define B_Msk 0x80u
+
+#define DISPLAY_OFF GPIOB->ODR |= OE_Msk;
+#define DISPLAY_ON  GPIOB->ODR &= ~OE_Msk
+
 const Font *font = &simpleFont;
 
 unsigned char _dotBuff[512];
 RGBColor1 _colorDispBuff[HEIGHT][WIDTH];
+RGBColor8 _color8DispBuff[HEIGHT][WIDTH];
 
 void displayInit(void) {
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
@@ -79,22 +100,22 @@ void displayInit(void) {
   GPIO_MODER_SET_OUTPUT(GPIOC, B);
 
   // clear RGB lines
-  GPIOA->ODR &= ~((1u << B2) | (1u << R1));
-  GPIOB->ODR &= ~((1u << G1) | (1u << R2) | (1u << B1) | (1u << G2));
+  GPIOA->ODR &= ~(B2_Msk | R1_Msk);
+  GPIOB->ODR &= ~(G1_Msk | R2_Msk | B1_Msk | G2_Msk);
 
   // clear row select lines
-  GPIOA->ODR &= ~((1u << E) | (1u << D) | (1u << A));
-  GPIOB->ODR &= ~(1u << C);
-  GPIOC->ODR &= ~(1u << B);
+  GPIOA->ODR &= ~(E_Msk | D_Msk | A_Msk);
+  GPIOB->ODR &= ~C_Msk;
+  GPIOC->ODR &= ~B_Msk;
 
   // clear clock line
-  GPIOA->ODR &= ~(1u << CLK);
+  GPIOA->ODR &= ~CLK_Msk;
 
   // clear latch line
-  GPIOB->ODR &= ~(1u << LAT);
+  GPIOB->ODR &= ~LAT_Msk;
 
   // set output disabled
-  GPIOB->ODR |= (1u << OE);  // OE HIGH - DISPLAY OFF
+  DISPLAY_OFF;
 
   clearDisplay();
 }
@@ -102,9 +123,12 @@ void displayInit(void) {
 void clearDisplay(void) {
   for (uint8_t row = 0; row < WIDTH; ++row) {
     for (uint8_t col = 0; col < HEIGHT; ++col) {
-      _colorDispBuff[row][col].r = 0;
-      _colorDispBuff[row][col].g = 0;
-      _colorDispBuff[row][col].b = 0;
+      _colorDispBuff[row][col].r  = 0;
+      _colorDispBuff[row][col].g  = 0;
+      _colorDispBuff[row][col].b  = 0;
+      _color8DispBuff[row][col].r = 0;
+      _color8DispBuff[row][col].g = 0;
+      _color8DispBuff[row][col].b = 0;
     }
   }
 }
@@ -165,7 +189,7 @@ void recvBuff2display(void) {
     for (int col = 0; col < WIDTH; ++col) {
       int cell = (row * WIDTH) + col;
       int idx  = cell / 8;
-      int bit  = cell % 8;
+      int bit  = 7 - (cell % 8);
       if (_dotBuff[idx] & (1u << bit)) {
         _colorDispBuff[row][col].r = 1;
         _colorDispBuff[row][col].g = 0;
@@ -175,50 +199,105 @@ void recvBuff2display(void) {
   }
 }
 
-static void _selectRow(uint8_t row) {
-  GPIOA->ODR &= ~((1u << E) | (1u << D) | (1u << A));
-  GPIOB->ODR &= ~(1u << C);
-  GPIOC->ODR &= ~(1u << B);
-  if ((row >> 0) & 1u) GPIOA->ODR |= (1u << A);
-  if ((row >> 1) & 1u) GPIOC->ODR |= (1u << B);
-  if ((row >> 2) & 1u) GPIOB->ODR |= (1u << C);
-  if ((row >> 3) & 1u) GPIOA->ODR |= (1u << D);
-  if ((row >> 4) & 1u) GPIOA->ODR |= (1u << E);
+void recvBuff2display8(void) {
+  b64Decode(_dotBuff, (unsigned char *)recvBuff);
+  for (int row = 0; row < HEIGHT; ++row) {
+    for (int col = 0; col < WIDTH; ++col) {
+      int cell = (row * WIDTH) + col;
+      int idx  = cell / 8;
+      int bit  = 7 - (cell % 8);
+      if (_dotBuff[idx] & (1u << bit)) {
+        _color8DispBuff[row][col].r = 1u;
+        _color8DispBuff[row][col].g = 0;
+        _color8DispBuff[row][col].b = 0;
+      }
+    }
+  }
 }
 
-static void _setColorLines(const RGBColor1 color, const uint8_t bottom) {
+static inline void _clearRGBLines(void) {
+  GPIOA->ODR &= ~(R1_Msk | B2_Msk);
+  GPIOB->ODR &= ~(R2_Msk | G1_Msk | B1_Msk | G2_Msk);
+}
+
+static inline void _selectRow(uint8_t row) {
+  GPIOA->ODR &= ~(E_Msk | D_Msk | A_Msk);
+  GPIOB->ODR &= ~C_Msk;
+  GPIOC->ODR &= ~B_Msk;
+  if (row & 0x01u) GPIOA->ODR |= A_Msk;
+  if (row & 0x02u) GPIOC->ODR |= B_Msk;
+  if (row & 0x04u) GPIOB->ODR |= C_Msk;
+  if (row & 0x08u) GPIOA->ODR |= D_Msk;
+  if (row & 0x10u) GPIOA->ODR |= E_Msk;
+}
+
+static inline void _setColorLines(const RGBColor1 color, const uint8_t bottom) {
+  _clearRGBLines();
   if (!bottom) {
-    // clear lines
-    GPIOA->ODR &= ~(1u << R1);
-    GPIOB->ODR &= ~((1u << G1) | (1u << B1));
-    // set lines
-    if (color.r) GPIOA->ODR |= (1u << R1);
-    if (color.g) GPIOB->ODR |= (1u << G1);
-    if (color.b) GPIOB->ODR |= (1u << B1);
+    if (color.r) GPIOA->ODR |= R1_Msk;
+    if (color.g) GPIOB->ODR |= G1_Msk;
+    if (color.b) GPIOB->ODR |= B1_Msk;
   } else {
-    // clear lines
-    GPIOA->ODR &= ~(1u << B2);
-    GPIOB->ODR &= ~((1u << R2) | (1u << G2));
-    // set lines
-    if (color.r) GPIOB->ODR |= (1u << R2);
-    if (color.g) GPIOB->ODR |= (1u << G2);
-    if (color.b) GPIOA->ODR |= (1u << B2);
+    if (color.r) GPIOB->ODR |= R2_Msk;
+    if (color.g) GPIOB->ODR |= G2_Msk;
+    if (color.b) GPIOA->ODR |= B2_Msk;
   }
+}
+
+static inline void _toggleClk(void) {
+  GPIOA->ODR |= CLK_Msk;
+  __NOP();
+  GPIOA->ODR &= ~CLK_Msk;
+}
+
+static inline void _toggleLat(void) {
+  GPIOB->ODR |= LAT_Msk;
+  __NOP();
+  GPIOB->ODR &= ~LAT_Msk;
 }
 
 void renderDisplay(void) {
   for (uint8_t row = 0; row < 32; ++row) {
-    GPIOB->ODR |= (1u << OE);
+    DISPLAY_OFF;
     _selectRow(row);
     for (uint8_t col = 0; col < 64; ++col) {
       _setColorLines(_colorDispBuff[row][col], 0);
       _setColorLines(_colorDispBuff[row + 32][col], 1);
-      GPIOA->ODR |= (1u << CLK);
-      GPIOA->ODR &= ~(1u << CLK);
+      _toggleClk();
     }
-    GPIOB->ODR |= (1u << LAT);
-    GPIOB->ODR &= ~(1u << LAT);
-    GPIOB->ODR &= ~(1u << OE);
-    sleepUs(313);  // 313 us per row; 10016 us per frame; 99.84 frames per second
+    _toggleLat();
+    DISPLAY_ON;
+    sleepUs(313);  // 313 us per two rows; 10016 us per frame; 99.84 frames per second
+  }
+}
+
+static inline void _setColor8Lines(const RGBColor8 color, const uint8_t bottom, const uint8_t hueBit) {
+  _clearRGBLines();
+  if (!bottom) {
+    // set lines
+    if (color.r & (1u << hueBit)) GPIOA->ODR |= R1_Msk;
+    if (color.g & (1u << hueBit)) GPIOB->ODR |= G1_Msk;
+    if (color.b & (1u << hueBit)) GPIOB->ODR |= B1_Msk;
+  } else {
+    // set lines
+    if (color.r & (1u << hueBit)) GPIOB->ODR |= R2_Msk;
+    if (color.g & (1u << hueBit)) GPIOB->ODR |= G2_Msk;
+    if (color.b & (1u << hueBit)) GPIOA->ODR |= B2_Msk;
+  }
+}
+
+void render8Display(void) {
+  for (uint8_t row = 0; row < 32; ++row) {
+    _selectRow(row);
+    int hueBit = 0;
+    DISPLAY_OFF;
+    for (uint8_t col = 0; col < 64; ++col) {
+      _setColor8Lines(_color8DispBuff[row][col], 0, hueBit);
+      _setColor8Lines(_color8DispBuff[row + 32][col], 1, hueBit);
+      _toggleClk();
+    }
+    _toggleLat();
+    DISPLAY_ON;
+    sleepUs(313);
   }
 }
