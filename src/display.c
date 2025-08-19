@@ -15,6 +15,11 @@
 #include "time.h"
 #include "usart.h"
 
+#define DISPLAY_COLS      64
+#define DISPLAY_ROWS      64
+#define HALF_DISPLAY_ROWS 32
+#define FRAME_DELAY_US    313  // 313 us per two rows; 10016 us per frame; 99.84 frames per second
+
 #define CLK 5
 #define E   6
 #define D   7
@@ -54,9 +59,9 @@
 
 const Font *font = &simpleFont;
 
-unsigned char _dotBuff[512];
-RGBColor1 _colorDispBuff[HEIGHT][WIDTH];
-RGBColor8 _color8DispBuff[HEIGHT][WIDTH];
+unsigned char monoBuff[512];
+RGBColor1 frameBuff1Bit[DISPLAY_ROWS][DISPLAY_COLS];
+RGBColor8 frameBuff8Bit[DISPLAY_ROWS][DISPLAY_COLS];
 
 void displayInit(void) {
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
@@ -121,14 +126,14 @@ void displayInit(void) {
 }
 
 void clearDisplay(void) {
-  for (uint8_t row = 0; row < WIDTH; ++row) {
-    for (uint8_t col = 0; col < HEIGHT; ++col) {
-      _colorDispBuff[row][col].r  = 0;
-      _colorDispBuff[row][col].g  = 0;
-      _colorDispBuff[row][col].b  = 0;
-      _color8DispBuff[row][col].r = 0;
-      _color8DispBuff[row][col].g = 0;
-      _color8DispBuff[row][col].b = 0;
+  for (uint8_t row = 0; row < DISPLAY_ROWS; ++row) {
+    for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
+      frameBuff1Bit[row][col].r = 0;
+      frameBuff1Bit[row][col].g = 0;
+      frameBuff1Bit[row][col].b = 0;
+      frameBuff8Bit[row][col].r = 0;
+      frameBuff8Bit[row][col].g = 0;
+      frameBuff8Bit[row][col].b = 0;
     }
   }
 }
@@ -139,7 +144,7 @@ void char2display(const int col, const int row, const char c, const RGBColor1 *c
     charMap = simpleFont.map[0];
   }
   // If remainder of display cannot fit fast fail
-  if (((row + font->height) >= HEIGHT) || ((col + font->width) >= WIDTH)) {
+  if (((row + font->height) >= DISPLAY_ROWS) || ((col + font->width) >= DISPLAY_COLS)) {
     return;
   }
   // Write character to buffer
@@ -147,9 +152,9 @@ void char2display(const int col, const int row, const char c, const RGBColor1 *c
     for (int r = font->height - 1; r >= 0; --r) {
       int offset = ((font->width * font->height) - 1) - ((r * font->width) + c);
       if ((charMap >> offset) & 1) {
-        _colorDispBuff[row + r][col + c].r = color->r;
-        _colorDispBuff[row + r][col + c].g = color->g;
-        _colorDispBuff[row + r][col + c].b = color->b;
+        frameBuff1Bit[row + r][col + c].r = color->r;
+        frameBuff1Bit[row + r][col + c].g = color->g;
+        frameBuff1Bit[row + r][col + c].b = color->b;
       }
     }
   }
@@ -184,32 +189,32 @@ void str2display(const int row, const int col, const char *str, const RGBColor1 
 }
 
 void recvBuff2display(void) {
-  b64Decode(_dotBuff, (unsigned char *)recvBuff);
-  for (int row = 0; row < HEIGHT; ++row) {
-    for (int col = 0; col < WIDTH; ++col) {
-      int cell = (row * WIDTH) + col;
+  b64Decode(monoBuff, (unsigned char *)recvBuff);
+  for (int row = 0; row < DISPLAY_ROWS; ++row) {
+    for (int col = 0; col < DISPLAY_COLS; ++col) {
+      int cell = (row * DISPLAY_COLS) + col;
       int idx  = cell / 8;
       int bit  = 7 - (cell % 8);
-      if (_dotBuff[idx] & (1u << bit)) {
-        _colorDispBuff[row][col].r = 1;
-        _colorDispBuff[row][col].g = 0;
-        _colorDispBuff[row][col].b = 0;
+      if (monoBuff[idx] & (1u << bit)) {
+        frameBuff1Bit[row][col].r = 1;
+        frameBuff1Bit[row][col].g = 0;
+        frameBuff1Bit[row][col].b = 0;
       }
     }
   }
 }
 
 void recvBuff2display8(void) {
-  b64Decode(_dotBuff, (unsigned char *)recvBuff);
-  for (int row = 0; row < HEIGHT; ++row) {
-    for (int col = 0; col < WIDTH; ++col) {
-      int cell = (row * WIDTH) + col;
+  b64Decode(monoBuff, (unsigned char *)recvBuff);
+  for (int row = 0; row < DISPLAY_ROWS; ++row) {
+    for (int col = 0; col < DISPLAY_COLS; ++col) {
+      int cell = (row * DISPLAY_COLS) + col;
       int idx  = cell / 8;
       int bit  = 7 - (cell % 8);
-      if (_dotBuff[idx] & (1u << bit)) {
-        _color8DispBuff[row][col].r = 1u;
-        _color8DispBuff[row][col].g = 0;
-        _color8DispBuff[row][col].b = 0;
+      if (monoBuff[idx] & (1u << bit)) {
+        frameBuff8Bit[row][col].r = 1u;
+        frameBuff8Bit[row][col].g = 0;
+        frameBuff8Bit[row][col].b = 0;
       }
     }
   }
@@ -257,17 +262,17 @@ static inline void _toggleLat(void) {
 }
 
 void renderDisplay(void) {
-  for (uint8_t row = 0; row < 32; ++row) {
+  for (uint8_t row = 0; row < HALF_DISPLAY_ROWS; ++row) {
     DISPLAY_OFF;
     _selectRow(row);
-    for (uint8_t col = 0; col < 64; ++col) {
-      _setColorLines(_colorDispBuff[row][col], 0);
-      _setColorLines(_colorDispBuff[row + 32][col], 1);
+    for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
+      _setColorLines(frameBuff1Bit[row][col], 0);
+      _setColorLines(frameBuff1Bit[row + HALF_DISPLAY_ROWS][col], 1);
       _toggleClk();
     }
     _toggleLat();
     DISPLAY_ON;
-    sleepUs(313);  // 313 us per two rows; 10016 us per frame; 99.84 frames per second
+    sleepUs(FRAME_DELAY_US);
   }
 }
 
@@ -287,17 +292,18 @@ static inline void _setColor8Lines(const RGBColor8 color, const uint8_t bottom, 
 }
 
 void render8Display(void) {
-  for (uint8_t row = 0; row < 32; ++row) {
-    _selectRow(row);
-    int hueBit = 0;
-    DISPLAY_OFF;
-    for (uint8_t col = 0; col < 64; ++col) {
-      _setColor8Lines(_color8DispBuff[row][col], 0, hueBit);
-      _setColor8Lines(_color8DispBuff[row + 32][col], 1, hueBit);
-      _toggleClk();
+  for (int8_t bit = 7; bit >= 0; --bit) {
+    for (uint8_t row = 0; row < HALF_DISPLAY_ROWS; ++row) {
+      DISPLAY_OFF;
+      _selectRow(row);
+      for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
+        _setColor8Lines(frameBuff8Bit[row][col], 0, bit);
+        _setColor8Lines(frameBuff8Bit[row + HALF_DISPLAY_ROWS][col], 1, bit);
+        _toggleClk();
+      }
+      _toggleLat();
+      DISPLAY_ON;
+      sleepUs(1 << bit);
     }
-    _toggleLat();
-    DISPLAY_ON;
-    sleepUs(313);
   }
 }
