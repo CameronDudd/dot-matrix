@@ -19,16 +19,16 @@ typedef struct {
   uint8_t r;
   uint8_t g;
   uint8_t b;
-} RGBColor8;
+} RGBColor;
 
 extern const RGBColor1 *WHITE1;
 extern const RGBColor1 *RED1;
 extern const RGBColor1 *GREEN1;
 extern const RGBColor1 *BLUE1;
 
-extern const RGBColor8 *WHITE8;
-extern const RGBColor8 *RED8;
-extern const RGBColor8 *GREEN8;
-extern const RGBColor8 *BLUE8;
+extern const RGBColor *WHITE;
+extern const RGBColor *RED;
+extern const RGBColor *GREEN;
+extern const RGBColor *BLUE;
 
 #endif  // COLOR_H

@@ -34,28 +34,28 @@ const RGBColor1 *RED1   = &_RED1;
 const RGBColor1 *GREEN1 = &_GREEN1;
 const RGBColor1 *BLUE1  = &_BLUE1;
 
-static const RGBColor8 _WHITE8 = {
+static const RGBColor _WHITE = {
     .r = 255,
     .g = 255,
     .b = 255,
 };
-static const RGBColor8 _RED8 = {
+static const RGBColor _RED = {
     .r = 255,
-    .g = 255,
-    .b = 255,
+    .g = 0,
+    .b = 0,
 };
-static const RGBColor8 _GREEN8 = {
-    .r = 255,
+static const RGBColor _GREEN = {
+    .r = 0,
     .g = 255,
-    .b = 255,
+    .b = 0,
 };
-static const RGBColor8 _BLUE8 = {
-    .r = 255,
-    .g = 255,
+static const RGBColor _BLUE = {
+    .r = 0,
+    .g = 0,
     .b = 255,
 };
 
-const RGBColor8 *WHITE8 = &_WHITE8;
-const RGBColor8 *RED8   = &_RED8;
-const RGBColor8 *GREEN8 = &_GREEN8;
-const RGBColor8 *BLUE8  = &_BLUE8;
+const RGBColor *WHITE = &_WHITE;
+const RGBColor *RED   = &_RED;
+const RGBColor *GREEN = &_GREEN;
+const RGBColor *BLUE  = &_BLUE;
