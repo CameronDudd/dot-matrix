@@ -8,7 +8,6 @@
 #include "usart.h"
 
 #define SYSCLK 16000000UL  // 16MHz HSI
-#define START  1755177805UL
 
 static void init(void) {
   systickInit(SYSCLK);
