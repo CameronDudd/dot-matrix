@@ -229,17 +229,17 @@ static void _selectRow(uint8_t row) {
   if (row & 0x10u) GPIOA->ODR |= E_Msk;
 }
 
-static void _setColorLines(const RGBColor color, const uint8_t bottom) {
+static void _setColorLines(const RGBColor color, const uint8_t bottom, const uint8_t bit) {
   if (!bottom) {
     _clearRGBTopLines();
-    if (color.r) GPIOA->ODR |= R1_Msk;
-    if (color.g) GPIOB->ODR |= G1_Msk;
-    if (color.b) GPIOB->ODR |= B1_Msk;
+    if (color.r & (1u << bit)) GPIOA->ODR |= R1_Msk;
+    if (color.g & (1u << bit)) GPIOB->ODR |= G1_Msk;
+    if (color.b & (1u << bit)) GPIOB->ODR |= B1_Msk;
   } else {
     _clearRGBBottomLines();
-    if (color.r) GPIOB->ODR |= R2_Msk;
-    if (color.g) GPIOB->ODR |= G2_Msk;
-    if (color.b) GPIOA->ODR |= B2_Msk;
+    if (color.r & (1u << bit)) GPIOB->ODR |= R2_Msk;
+    if (color.g & (1u << bit)) GPIOB->ODR |= G2_Msk;
+    if (color.b & (1u << bit)) GPIOA->ODR |= B2_Msk;
   }
 }
 
@@ -254,17 +254,18 @@ static void _toggleLat(void) {
 }
 
 void renderDisplay(void) {
-  for (uint8_t row = 0; row < HALF_DISPLAY_ROWS; ++row) {
-    DISPLAY_OFF;
-    _selectRow(row);
-    for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
-      _setColorLines(frameBuffer[row][col], 0);
-      _setColorLines(frameBuffer[row + HALF_DISPLAY_ROWS][col], 1);
-      _toggleClk();
+  for (uint8_t bit = 0; bit < 4; ++bit) {
+    for (uint8_t row = 0; row < HALF_DISPLAY_ROWS; ++row) {
+      _selectRow(row);
+      for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
+        _setColorLines(frameBuffer[row][col], 0, bit);
+        _setColorLines(frameBuffer[row + HALF_DISPLAY_ROWS][col], 1, bit);
+        _toggleClk();
+      }
+      _toggleLat();
+      DISPLAY_ON;
+      sleepUs(1 << bit);
+      DISPLAY_OFF;
     }
-    _toggleLat();
-    DISPLAY_ON;
-    sleepUs(FRAME_DELAY_US);
   }
-  DISPLAY_OFF;
 }
