@@ -7,15 +7,17 @@
 #define DISPLAY_H
 
 #include "color.h"
+#include "entity.h"
 
-#define WIDTH  64
-#define HEIGHT 64
+#define DISPLAY_COLS 64
+#define DISPLAY_ROWS 64
 
 void displayInit(void);
 void clearDisplay(void);
-void int2display(const int row, const int col, uint32_t val, const RGBColor1 *color);
-void char2display(const int col, const int row, const char c, const RGBColor1 *color);
-void str2display(const int xpos, const int ypos, const char *str, const RGBColor1 *color);
+void drawSquare(Entity *square);
+void int2display(const int row, const int col, uint32_t val, const RGBColor *color);
+void char2display(const int col, const int row, const char c, const RGBColor *color);
+void str2display(const int xpos, const int ypos, const char *str, const RGBColor *color);
 void recvBuff2display(void);
 void renderDisplay(void);
 
