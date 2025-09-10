@@ -61,3 +61,7 @@ const RGBColor *BLUE    = &_BLUE;
 const RGBColor *MAGENTA = &_MAGENTA;
 const RGBColor *CYAN    = &_CYAN;
 const RGBColor *WHITE   = &_WHITE;
+
+const RGBColor ALL_COLORS[NUM_COLORS] = {
+    _RED, _GREEN, _YELLOW, _BLUE, _MAGENTA, _CYAN, _WHITE,
+};

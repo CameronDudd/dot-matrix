@@ -8,6 +8,8 @@
 
 #include <stdint.h>
 
+#define NUM_COLORS 7
+
 typedef struct {
   uint8_t r;
   uint8_t g;
@@ -22,5 +24,6 @@ extern const RGBColor *BLUE;
 extern const RGBColor *MAGENTA;
 extern const RGBColor *CYAN;
 extern const RGBColor *WHITE;
+extern const RGBColor ALL_COLORS[NUM_COLORS];
 
 #endif  // COLOR_H
