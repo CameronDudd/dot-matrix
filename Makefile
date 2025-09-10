@@ -6,12 +6,16 @@ CFLAGS = -DSTM32F401xE \
          -Wall -Wextra -g -std=c99 -O3 \
          -nostartfiles -nostdlib -ffreestanding \
          -mthumb -mcpu=cortex-m4 \
+         -mfpu=fpv4-sp-d16 \
+         -mfloat-abi=hard \
          -Iinclude \
          -Ilib/STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
          -Ilib/STM32CubeF4/Drivers/CMSIS/Include
 
 LDFLAGS = -Tlinker.ld \
           -nostdlib -nodefaultlibs -nostartfiles -Wl,--gc-sections
+          -mfpu=fpv4-sp-d16 \
+          -mfloat-abi=hard
 
 SRC     = $(wildcard src/*.c)
 OBJ     = $(patsubst src/%.c, bin/%.o, $(SRC))

@@ -41,6 +41,10 @@ void reset_handler(void) {
     *dst++ = 0;
   }
 
+  SCB->CPACR |= (0xF << 20);  // Enable FPU
+  __DSB();                    // Data Synchronization Barrier
+  __ISB();                    // Instruction Synchronization Barrier
+
   extern int main(void);
   main();
 
