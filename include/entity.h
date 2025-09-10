@@ -10,8 +10,8 @@
 
 #include "vec.h"
 
-#define ENTITY_DRAW   (obj)(obj).draw(&(obj))
-#define ENTITY_UPDATE (obj)(obj).update(&(obj))
+#define ENTITY_DRAW(obj)   (obj).draw(&(obj))
+#define ENTITY_UPDATE(obj) (obj).update(&(obj))
 
 typedef struct {
   Vec2 pos;
