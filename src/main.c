@@ -7,6 +7,7 @@
 
 #include "display.h"
 #include "entity.h"
+#include "rand.h"
 #include "time.h"
 #include "usart.h"
 
@@ -72,6 +73,7 @@ static void init(void) {
   systickInit(SYSCLK);
   tim2Init(SYSCLK);
   usartInit(SYSCLK);
+  randInit();
   displayInit();
 }
 
