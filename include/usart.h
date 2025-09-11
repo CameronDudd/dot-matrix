@@ -18,5 +18,6 @@ void Usart2GlobalInterrupt_Handler(void);
 void usartInit(uint32_t clkHz);
 void usart2TxChar(const char c);
 void usart2TxStr(const char *s);
+void usart2TxUInt(uint32_t val);
 
 #endif  // USART_H
