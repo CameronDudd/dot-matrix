@@ -34,7 +34,4 @@ uint32_t rand(void) {
   return seed;
 }
 
-uint32_t randRange(uint32_t min, uint32_t max) {
-  uint64_t range = (uint64_t)max - (uint64_t)min + 1;  // cast range to 64 to not always bring value to zero; +1 inclusive
-  return (uint32_t)(((uint64_t)rand() * range) >> 32) + min;
-}
+int randRange(int min, int max) { return ((int64_t)((int64_t)rand() * (int64_t)(max - min + 1)) >> 32) + min; }

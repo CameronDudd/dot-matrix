@@ -10,6 +10,6 @@
 
 void randInit(void);
 uint32_t rand(void);
-uint32_t randRange(uint32_t min, uint32_t max);
+int randRange(int min, int max);
 
 #endif  // RAND_H
