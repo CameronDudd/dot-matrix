@@ -11,63 +11,8 @@
 #include "time.h"
 #include "usart.h"
 
-#define SYSCLK 16000000UL  // 16MHz HSI
-
-Entity square1 = {
-    .state =
-        {
-            .pos           = {.x = 30, .y = 30},
-            .vel           = {.x = -7, .y = -3},
-            .colorIdx      = 0,
-            .lastUpdatedMs = 0,
-        },
-    .w      = 10,
-    .h      = 10,
-    .update = moveSquare,
-    .draw   = drawSquare,
-};
-
-Entity square2 = {
-    .state =
-        {
-            .pos           = {.x = 30, .y = 30},
-            .vel           = {.x = 10, .y = -7},
-            .colorIdx      = 1,
-            .lastUpdatedMs = 0,
-        },
-    .w      = 10,
-    .h      = 10,
-    .update = moveSquare,
-    .draw   = drawSquare,
-};
-
-Entity square3 = {
-    .state =
-        {
-            .pos           = {.x = 30, .y = 30},
-            .vel           = {.x = -2, .y = 8},
-            .colorIdx      = 2,
-            .lastUpdatedMs = 0,
-        },
-    .w      = 10,
-    .h      = 10,
-    .update = moveSquare,
-    .draw   = drawSquare,
-};
-
-Entity square4 = {
-    .state =
-        {
-            .pos           = {.x = 30, .y = 30},
-            .vel           = {.x = 9, .y = 3},
-            .colorIdx      = 3,
-            .lastUpdatedMs = 0,
-        },
-    .w      = 10,
-    .h      = 10,
-    .update = moveSquare,
-    .draw   = drawSquare,
-};
+#define SYSCLK       16000000UL  // 16MHz HSI
+#define SQUARE_WIDTH 5
 
 static void init(void) {
   systickInit(SYSCLK);
@@ -78,9 +23,19 @@ static void init(void) {
 }
 
 int main(void) {
-  Entity entities[] = {square1, square2, square3, square4};
-
   init();
+
+  int minX = SQUARE_WIDTH;
+  int maxX = DISPLAY_COLS - SQUARE_WIDTH;
+  int minY = SQUARE_WIDTH;
+  int maxY = DISPLAY_ROWS - SQUARE_WIDTH;
+
+  Entity entities[] = {
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
+  };
+
   while (1) {
     for (size_t i = 0; i < sizeof(entities) / sizeof(Entity); ++i) {
       ENTITY_DRAW(entities[i]);
