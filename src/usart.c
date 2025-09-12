@@ -69,17 +69,3 @@ void usart2TxStr(const char *s) {
     usart2TxChar(*s++);
   }
 }
-
-// FIXME: Issues in current conversion technique
-void usart2TxUInt(uint32_t val) {
-  char c;
-  int mag = 1;
-  while ((val / mag) > 1) {
-    mag *= 10;
-  }
-  for (; mag > 0; mag /= 10) {
-    c = val / mag;
-    val -= (c * mag);
-    usart2TxChar('0' + c);
-  }
-}

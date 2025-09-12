@@ -164,22 +164,6 @@ void char2display(const int col, const int row, const char c, const RGBColor *co
   }
 }
 
-void int2display(const int row, const int col, uint32_t val, const RGBColor *color) {
-  char c;
-  int curRow = row;
-  int curCol = col;
-  int mag    = 1;
-  while ((val / mag) > 1) {
-    mag *= 10;
-  }
-  for (; mag > 0; mag /= 10) {
-    c = val / mag;
-    val -= (c * mag);
-    char2display(curCol, curRow, '0' + c, color);
-    curCol += (font->width + 1);
-  }
-}
-
 void str2display(const int row, const int col, const char *str, const RGBColor *color) {
   int curRow = row;
   int curCol = col;
