@@ -8,6 +8,6 @@
 
 #include <stdint.h>
 
-const char* itoa(uint32_t i);
+const char* itoa(int i);
 
 #endif  // format_h

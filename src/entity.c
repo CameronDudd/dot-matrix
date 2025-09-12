@@ -7,6 +7,7 @@
 
 #include "color.h"
 #include "display.h"
+#include "rand.h"
 #include "time.h"
 
 void moveSquare(Entity *square) {
@@ -33,7 +34,7 @@ void moveSquare(Entity *square) {
     collision    = 1;
   }
   if (collision) {
-    state->colorIdx = (state->colorIdx + 1) % NUM_COLORS;
+    state->colorIdx = randRange(0, NUM_COLORS - 1);
   }
 
   // Update position
