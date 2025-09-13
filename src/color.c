@@ -6,51 +6,59 @@
 #include "color.h"
 
 static const RGBColor _BLACK = {
-    .r = 0,
-    .g = 0,
-    .b = 0,
+    .r   = 0,
+    .g   = 0,
+    .b   = 0,
+    .brt = BRT0,
 };
 
 static const RGBColor _RED = {
-    .r = 255,
-    .g = 0,
-    .b = 0,
+    .r   = 1,
+    .g   = 0,
+    .b   = 0,
+    .brt = BRT4,
 };
 
 static const RGBColor _GREEN = {
-    .r = 0,
-    .g = 255,
-    .b = 0,
+    .r   = 0,
+    .g   = 1,
+    .b   = 0,
+    .brt = BRT4,
 };
 
 static const RGBColor _YELLOW = {
-    .r = 255,
-    .g = 255,
-    .b = 0,
+    .r   = 1,
+    .g   = 1,
+    .b   = 0,
+    .brt = BRT4,
 };
 
 static const RGBColor _BLUE = {
-    .r = 0,
-    .g = 0,
-    .b = 255,
+    .r   = 0,
+    .g   = 0,
+    .b   = 1,
+    .brt = BRT4,
 };
 
 static const RGBColor _MAGENTA = {
-    .r = 255,
-    .g = 0,
-    .b = 255,
+    .r   = 1,
+    .g   = 0,
+    .b   = 1,
+    .brt = BRT4,
 };
 
 static const RGBColor _CYAN = {
-    .r = 0,
-    .g = 255,
-    .b = 255,
+    .r   = 0,
+    .g   = 1,
+    .b   = 1,
+    .brt = BRT4,
 };
 
 static const RGBColor _WHITE = {
-    .r = 255,
-    .g = 255,
-    .b = 255,
+    .r   = 1,
+    .g   = 1,
+    .b   = 1,
+    .brt = BRT4,
 };
 
 const RGBColor *BLACK   = &_BLACK;
