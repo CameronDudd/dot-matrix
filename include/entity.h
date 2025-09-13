@@ -11,8 +11,8 @@
 #include "color.h"
 #include "vec.h"
 
-#define ENTITY_DRAW(obj)   (obj).draw(&(obj))
-#define ENTITY_UPDATE(obj) (obj).update(&(obj))
+#define DRAW_OBJECT(obj)   (obj).draw(&(obj))
+#define UPDATE_OBJECT(obj) (obj).update(&(obj))
 
 typedef struct {
   Vec2 pos;
@@ -21,17 +21,10 @@ typedef struct {
   uint32_t lastUpdatedMs;
 } EntityState;
 
-typedef struct Entity {
+typedef struct Creature {
   EntityState state;
-  int w;
-  int h;
-  void (*update)(struct Entity *entity);
-  void (*draw)(struct Entity *entity);
-} Entity;
-
-#define CREATE_ENTITY(x, y, w, h, vx, vy, color, update, draw) \
-  (Entity) { .state = {.pos = {(x), (y)}, .vel = {(vx), (vy)}, color, .lastUpdatedMs = 0}, (w), (h), (update), (draw) }
-
-void moveSquare(Entity *square);
+  void (*update)(struct Creature *creature);
+  void (*draw)(struct Creature *creature);
+} Creature;
 
 #endif  // ENTITY_H

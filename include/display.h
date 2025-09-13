@@ -14,7 +14,8 @@
 
 void displayInit(void);
 void clearDisplay(void);
-void drawSquare(Entity *square);
+void drawRect(int x, int y, int w, int h, const RGBColor *color);
+void drawCreature(Creature *creature);
 void char2display(const int col, const int row, const char c, const RGBColor *color);
 void str2display(const int xpos, const int ypos, const char *str, const RGBColor *color);
 void recvBuff2display(void);

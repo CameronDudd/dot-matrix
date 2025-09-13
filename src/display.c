@@ -134,12 +134,36 @@ void clearDisplay(void) {
   }
 }
 
-void drawSquare(Entity *square) {
-  Vec2 pos = square->state.pos;
-  for (int row = (int)pos.y; row < (int)pos.y + square->h; ++row) {
-    for (int col = (int)pos.x; col < (int)pos.x + square->w; ++col) {
-      frameBuffer[row][col] = *square->state.color;
+void drawRect(int x, int y, int w, int h, const RGBColor *color) {
+  for (int row = y; row < y + h; ++row) {
+    for (int col = x; col < x + w; ++col) {
+      frameBuffer[row % DISPLAY_ROWS][col % DISPLAY_COLS] = *color;
     }
+  }
+}
+
+void drawCreature(Creature *creature) {
+  Vec2 pos = creature->state.pos;
+  Vec2 vel = creature->state.vel;
+
+  // Stationary
+  if ((vel.x == 0) && (vel.y == 0)) {
+    drawRect(pos.x, pos.y, 2, 2, creature->state.color);
+    return;
+  }
+
+  // Vertical
+  if (vel.y < 0) {
+    drawRect(pos.x, pos.y, 2, 1, creature->state.color);
+  } else if (vel.y > 0) {
+    drawRect(pos.x, pos.y + 1, 2, 1, creature->state.color);
+  }
+
+  // Horizontal
+  if (vel.x < 0) {
+    drawRect(pos.x, pos.y, 1, 2, creature->state.color);
+  } else if (vel.x > 0) {
+    drawRect(pos.x + 1, pos.y, 1, 2, creature->state.color);
   }
 }
 

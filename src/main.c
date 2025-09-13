@@ -5,11 +5,13 @@
 
 #include <stddef.h>
 
+#include "color.h"
 #include "display.h"
 #include "entity.h"
 #include "rand.h"
 #include "time.h"
 #include "usart.h"
+#include "vec.h"
 
 #define SQUARE_WIDTH 5
 
@@ -25,22 +27,19 @@ static void init(void) {
 int main(void) {
   init();
 
-  int minX = SQUARE_WIDTH;
-  int maxX = DISPLAY_COLS - SQUARE_WIDTH;
-  int minY = SQUARE_WIDTH;
-  int maxY = DISPLAY_ROWS - SQUARE_WIDTH;
-
-  Entity entities[] = {
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
+  Creature friend = {
+      {
+          {32, 32},
+          {1, -1},
+          RED,
+          0,
+      },
+      NULL,
+      drawCreature,
   };
 
   while (1) {
-    for (size_t i = 0; i < sizeof(entities) / sizeof(Entity); ++i) {
-      ENTITY_DRAW(entities[i]);
-      ENTITY_UPDATE(entities[i]);
-    }
+    DRAW_OBJECT(friend);
     renderDisplay();
     clearDisplay();
   }
