@@ -214,16 +214,17 @@ static void _selectRow(uint8_t row) {
 }
 
 static void _setColorLines(const RGBColor color, const uint8_t bottom, const uint8_t bit) {
+  uint8_t bitMsk = 1u << bit;
   if (!bottom) {
     _clearRGBTopLines();
-    if (color.r & (1u << bit)) GPIOA->ODR |= R1_Msk;
-    if (color.g & (1u << bit)) GPIOB->ODR |= G1_Msk;
-    if (color.b & (1u << bit)) GPIOB->ODR |= B1_Msk;
+    GPIOA->ODR |= (R1_Msk * (color.r & bitMsk));
+    GPIOB->ODR |= (G1_Msk * (color.g & bitMsk));
+    GPIOB->ODR |= (B1_Msk * (color.b & bitMsk));
   } else {
     _clearRGBBottomLines();
-    if (color.r & (1u << bit)) GPIOB->ODR |= R2_Msk;
-    if (color.g & (1u << bit)) GPIOB->ODR |= G2_Msk;
-    if (color.b & (1u << bit)) GPIOA->ODR |= B2_Msk;
+    GPIOB->ODR |= (R2_Msk * (color.r & bitMsk));
+    GPIOB->ODR |= (G2_Msk * (color.g & bitMsk));
+    GPIOA->ODR |= (B2_Msk * (color.b & bitMsk));
   }
 }
 
