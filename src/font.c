@@ -10,7 +10,7 @@
  * Therefore need 15 bits to represent the character leaving a flag bit (HSB) spare
  * If flag is set and rest of data is 0 it means it's an unsupported character
  */
-Font simpleFont = {
+const Font simpleFont = {
     .label  = "Simple Font",
     .width  = 3,
     .height = 5,
@@ -120,4 +120,4 @@ Font simpleFont = {
         },
 };
 
-int charUnsupported(uint16_t charMap) { return (0x8000 ^ charMap) == 0; }
+int charUnsupported(const uint16_t charMap) { return (0x8000 ^ charMap) == 0; }

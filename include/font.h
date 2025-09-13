@@ -12,13 +12,13 @@
 
 typedef struct {
   char *label;
-  int width;
-  int height;
-  uint16_t map[];
+  const uint8_t width;
+  const uint8_t height;
+  const uint16_t map[127];
 } Font;
 
-extern Font simpleFont;
+extern const Font simpleFont;
 
-int charUnsupported(uint16_t charMap);
+int charUnsupported(const uint16_t charMap);
 
 #endif  // FONT_H
