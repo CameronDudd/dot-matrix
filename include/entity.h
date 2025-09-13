@@ -8,23 +8,30 @@
 
 #include <stdint.h>
 
-#include "color.h"
 #include "vec.h"
 
-#define DRAW_OBJECT(obj)   (obj).draw(&(obj))
-#define UPDATE_OBJECT(obj) (obj).update(&(obj))
+#define UPDATE_ENTITY(entity) (entity).update(&(entity))
+
+typedef enum {
+  TEAM1 = 1,
+  TEAM2 = 2,
+} EntityTeam;
 
 typedef struct {
   Vec2 pos;
   Vec2 vel;
-  const RGBColor *color;
+  uint8_t health;
+  EntityTeam team;
   uint32_t lastUpdatedMs;
 } EntityState;
 
-typedef struct Creature {
+typedef struct Entity {
   EntityState state;
-  void (*update)(struct Creature *creature);
-  void (*draw)(struct Creature *creature);
-} Creature;
+  void (*update)(struct Entity *entity);
+} Entity;
+
+extern const Entity *NULLEntity;
+
+void updateEntity(Entity *entity);
 
 #endif  // ENTITY_H

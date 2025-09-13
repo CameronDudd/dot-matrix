@@ -11,7 +11,7 @@
 #include "rand.h"
 #include "time.h"
 #include "usart.h"
-#include "vec.h"
+#include "world.h"
 
 #define SQUARE_WIDTH 5
 
@@ -22,25 +22,38 @@ static void init(void) {
   usartInit();
   randInit();
   displayInit();
+  worldInit();
 }
 
 int main(void) {
-  init();
-
-  Creature friend = {
+  Entity creature = {
       {
-          {32, 32},
-          {1, -1},
-          RED,
+          {1, 1},
+          {0, 0},
+          3,
+          TEAM1,
           0,
       },
       NULL,
-      drawCreature,
   };
 
+  Entity creature2 = {
+      {
+          {0, 0},
+          {0, 0},
+          3,
+          TEAM2,
+          0,
+      },
+      NULL,
+  };
+
+  init();
+  str2display(0, 0, "TEST", RED);
+  worldAddCreature(&creature);
+  worldAddCreature(&creature2);
   while (1) {
-    DRAW_OBJECT(friend);
+    drawWorld(&world);
     renderDisplay();
-    clearDisplay();
   }
 }

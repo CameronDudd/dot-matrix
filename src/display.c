@@ -14,7 +14,6 @@
 #include "stm32f401xe.h"
 #include "time.h"
 #include "usart.h"
-#include "vec.h"
 
 #define HALF_DISPLAY_ROWS   32
 #define RENDER_SLEEP_BASE   3
@@ -60,7 +59,7 @@
 const Font *font = &simpleFont;
 
 unsigned char monoBuff[512];
-static RGBColor frameBuffer[DISPLAY_ROWS][DISPLAY_COLS];
+static const RGBColor *frameBuffer[DISPLAY_ROWS][DISPLAY_COLS];
 
 void displayInit(void) {
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
@@ -127,9 +126,7 @@ void displayInit(void) {
 void clearDisplay(void) {
   for (uint8_t row = 0; row < DISPLAY_ROWS; ++row) {
     for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
-      frameBuffer[row][col].r = 0;
-      frameBuffer[row][col].g = 0;
-      frameBuffer[row][col].b = 0;
+      frameBuffer[row][col] = BLACK;
     }
   }
 }
@@ -181,9 +178,7 @@ void char2display(const int col, const int row, const char c, const RGBColor *co
     for (int r = font->height - 1; r >= 0; --r) {
       int offset = ((font->width * font->height) - 1) - ((r * font->width) + c);
       if ((charMap >> offset) & 1) {
-        frameBuffer[row + r][col + c].r = color->r;
-        frameBuffer[row + r][col + c].g = color->g;
-        frameBuffer[row + r][col + c].b = color->b;
+        frameBuffer[row + r][col + c] = color;
       }
     }
   }
@@ -209,9 +204,7 @@ void recvBuff2display(void) {
       int idx  = cell / 8;
       int bit  = cell % 8;
       if (monoBuff[idx] & (1u << bit)) {
-        frameBuffer[row][col].r = BRTMAX;
-        frameBuffer[row][col].g = BRTMAX;
-        frameBuffer[row][col].b = BRTMAX;
+        frameBuffer[row][col] = WHITE;
       }
     }
   }
@@ -238,17 +231,17 @@ static void _selectRow(uint8_t row) {
   if (row & 0x10u) GPIOA->ODR |= E_Msk;
 }
 
-static void _setColorLines(const RGBColor color, const uint8_t bottom, const uint8_t bit) {
+static void _setColorLines(const RGBColor *color, const uint8_t bottom, const uint8_t bit) {
   if (!bottom) {
     _clearRGBTopLines();
-    if (color.r > bit) GPIOA->ODR |= R1_Msk;
-    if (color.g > bit) GPIOB->ODR |= G1_Msk;
-    if (color.b > bit) GPIOB->ODR |= B1_Msk;
+    if (color->r > bit) GPIOA->ODR |= R1_Msk;
+    if (color->g > bit) GPIOB->ODR |= G1_Msk;
+    if (color->b > bit) GPIOB->ODR |= B1_Msk;
   } else {
     _clearRGBBottomLines();
-    if (color.r > bit) GPIOB->ODR |= R2_Msk;
-    if (color.g > bit) GPIOB->ODR |= G2_Msk;
-    if (color.b > bit) GPIOA->ODR |= B2_Msk;
+    if (color->r > bit) GPIOB->ODR |= R2_Msk;
+    if (color->g > bit) GPIOB->ODR |= G2_Msk;
+    if (color->b > bit) GPIOA->ODR |= B2_Msk;
   }
 }
 
