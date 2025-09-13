@@ -11,13 +11,13 @@
 #include "time.h"
 #include "usart.h"
 
-#define SYSCLK       16000000UL  // 16MHz HSI
 #define SQUARE_WIDTH 5
 
 static void init(void) {
-  systickInit(SYSCLK);
-  tim2Init(SYSCLK);
-  usartInit(SYSCLK);
+  clockInit();
+  systickInit();
+  tim2Init();
+  usartInit();
   randInit();
   displayInit();
 }
@@ -31,9 +31,9 @@ int main(void) {
   int maxY = DISPLAY_ROWS - SQUARE_WIDTH;
 
   Entity entities[] = {
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
-      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), moveSquare, drawSquare),
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
+      CREATE_ENTITY(randRange(minX, maxX), randRange(minY, maxY), SQUARE_WIDTH, SQUARE_WIDTH, randRange(1, 10), randRange(1, 10), RED, moveSquare, drawSquare),
   };
 
   while (1) {
