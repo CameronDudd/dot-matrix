@@ -7,6 +7,7 @@
 
 #include "gpio.h"
 #include "stm32f401xe.h"
+#include "time.h"
 
 #define AF_BITS_PER_PIN 4
 #define AF_USART        7u
@@ -32,7 +33,7 @@ void Usart2GlobalInterrupt_Handler(void) {
   }
 }
 
-void usartInit(uint32_t clkHz) {
+void usartInit(void) {
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
   RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 
@@ -46,7 +47,7 @@ void usartInit(uint32_t clkHz) {
 
   GPIOA->AFR[0] |= (AF_USART << (2 * AF_BITS_PER_PIN)) | (AF_USART << (3 * AF_BITS_PER_PIN));
 
-  USART2->BRR = clkHz / BAUD;
+  USART2->BRR = sysclk / BAUD;
   USART2->CR1 &= ~USART_CR1_M;                                                    // word Length: 1 Start bit, 8 Data bits, n Stop bit
   USART2->CR2 &= ~USART_CR2_STOP_Msk;                                             // 00: 1 Stop bit
   USART2->CR1 = (USART_CR1_TE | USART_CR1_RE | USART_CR1_UE | USART_CR1_RXNEIE);  // enable tx, rx, usart, interrupt

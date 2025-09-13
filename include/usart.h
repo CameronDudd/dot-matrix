@@ -15,7 +15,7 @@ extern volatile char recvBuffComplete;
 extern volatile char recvBuff[RECV_BUFF_SIZE];
 
 void Usart2GlobalInterrupt_Handler(void);
-void usartInit(uint32_t clkHz);
+void usartInit(void);
 void usart2TxChar(const char c);
 void usart2TxStr(const char *s);
 
