@@ -5,9 +5,7 @@
 
 #include "entity.h"
 
-#include "color.h"
 #include "display.h"
-#include "rand.h"
 #include "time.h"
 
 void moveSquare(Entity *square) {
@@ -24,17 +22,11 @@ void moveSquare(Entity *square) {
   float dt             = deltaMs / 1000.0f;
 
   // Detect collision
-  int collision = 0;
   if ((state->pos.x <= 0) || (DISPLAY_ROWS <= state->pos.x + square->w)) {
     state->vel.x = -state->vel.x;
-    collision    = 1;
   }
   if ((state->pos.y <= 0) || (DISPLAY_COLS <= state->pos.y + square->h)) {
     state->vel.y = -state->vel.y;
-    collision    = 1;
-  }
-  if (collision) {
-    state->colorIdx = randRange(0, NUM_COLORS - 1);
   }
 
   // Update position

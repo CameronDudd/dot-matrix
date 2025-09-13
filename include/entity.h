@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 
+#include "color.h"
 #include "vec.h"
 
 #define ENTITY_DRAW(obj)   (obj).draw(&(obj))
@@ -16,7 +17,7 @@
 typedef struct {
   Vec2 pos;
   Vec2 vel;
-  int colorIdx;
+  const RGBColor *color;
   uint32_t lastUpdatedMs;
 } EntityState;
 
@@ -28,8 +29,8 @@ typedef struct Entity {
   void (*draw)(struct Entity *entity);
 } Entity;
 
-#define CREATE_ENTITY(x, y, w, h, vx, vy, update, draw) \
-  (Entity) { .state = {.pos = {(x), (y)}, .vel = {(vx), (vy)}, .colorIdx = 0, .lastUpdatedMs = 0}, (w), (h), (update), (draw) }
+#define CREATE_ENTITY(x, y, w, h, vx, vy, color, update, draw) \
+  (Entity) { .state = {.pos = {(x), (y)}, .vel = {(vx), (vy)}, color, .lastUpdatedMs = 0}, (w), (h), (update), (draw) }
 
 void moveSquare(Entity *square);
 
