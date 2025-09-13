@@ -16,8 +16,9 @@
 #include "usart.h"
 #include "vec.h"
 
-#define HALF_DISPLAY_ROWS 32
-#define FRAME_DELAY_US    313  // 313 us per two rows; 10016 us per frame; 99.84 frames per second
+#define HALF_DISPLAY_ROWS   32
+#define RENDER_SLEEP_BASE   3
+#define RENDER_SLEEP_OFFSET 3
 
 #define CLK 5
 #define E   6
@@ -137,7 +138,7 @@ void drawSquare(Entity *square) {
   Vec2 pos = square->state.pos;
   for (int row = (int)pos.y; row < (int)pos.y + square->h; ++row) {
     for (int col = (int)pos.x; col < (int)pos.x + square->w; ++col) {
-      frameBuffer[row][col] = ALL_COLORS[square->state.colorIdx];
+      frameBuffer[row][col] = *square->state.color;
     }
   }
 }
@@ -184,9 +185,9 @@ void recvBuff2display(void) {
       int idx  = cell / 8;
       int bit  = cell % 8;
       if (monoBuff[idx] & (1u << bit)) {
-        frameBuffer[row][col].r = 0b00001111;
-        frameBuffer[row][col].g = 0b00001111;
-        frameBuffer[row][col].b = 0b00001111;
+        frameBuffer[row][col].r = BRTMAX;
+        frameBuffer[row][col].g = BRTMAX;
+        frameBuffer[row][col].b = BRTMAX;
       }
     }
   }
@@ -214,17 +215,16 @@ static void _selectRow(uint8_t row) {
 }
 
 static void _setColorLines(const RGBColor color, const uint8_t bottom, const uint8_t bit) {
-  uint8_t bitMsk = 1u << bit;
   if (!bottom) {
     _clearRGBTopLines();
-    GPIOA->ODR |= (R1_Msk * (color.r & bitMsk));
-    GPIOB->ODR |= (G1_Msk * (color.g & bitMsk));
-    GPIOB->ODR |= (B1_Msk * (color.b & bitMsk));
+    if (color.r > bit) GPIOA->ODR |= R1_Msk;
+    if (color.g > bit) GPIOB->ODR |= G1_Msk;
+    if (color.b > bit) GPIOB->ODR |= B1_Msk;
   } else {
     _clearRGBBottomLines();
-    GPIOB->ODR |= (R2_Msk * (color.r & bitMsk));
-    GPIOB->ODR |= (G2_Msk * (color.g & bitMsk));
-    GPIOA->ODR |= (B2_Msk * (color.b & bitMsk));
+    if (color.r > bit) GPIOB->ODR |= R2_Msk;
+    if (color.g > bit) GPIOB->ODR |= G2_Msk;
+    if (color.b > bit) GPIOA->ODR |= B2_Msk;
   }
 }
 
@@ -239,7 +239,9 @@ static void _toggleLat(void) {
 }
 
 void renderDisplay(void) {
-  for (uint8_t bit = 0; bit < 4; ++bit) {
+  uint8_t sleep;
+  for (uint8_t bit = 0; bit < BRTMAX; ++bit) {
+    sleep = (RENDER_SLEEP_OFFSET << bit) * RENDER_SLEEP_BASE;
     for (uint8_t row = 0; row < HALF_DISPLAY_ROWS; ++row) {
       _selectRow(row);
       for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
@@ -249,7 +251,7 @@ void renderDisplay(void) {
       }
       _toggleLat();
       DISPLAY_ON;
-      sleepUs(1 << bit);
+      sleepUs(sleep);
       DISPLAY_OFF;
     }
   }
