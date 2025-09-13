@@ -5,6 +5,8 @@
 
 #include "color.h"
 
+#include "rand.h"
+
 static const RGBColor _BLACK = {
     .r = 0,
     .g = 0,
@@ -65,3 +67,5 @@ const RGBColor *WHITE   = &_WHITE;
 const RGBColor ALL_COLORS[NUM_COLORS] = {
     _RED, _GREEN, _YELLOW, _BLUE, _MAGENTA, _CYAN, _WHITE,
 };
+
+const RGBColor *randColor(void) { return &ALL_COLORS[randRange(0, NUM_COLORS - 1)]; }

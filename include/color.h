@@ -35,4 +35,6 @@ extern const RGBColor *CYAN;
 extern const RGBColor *WHITE;
 extern const RGBColor ALL_COLORS[NUM_COLORS];
 
+const RGBColor *randColor(void);
+
 #endif  // COLOR_H
