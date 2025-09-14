@@ -13,15 +13,16 @@
 #define UPDATE_ENTITY(entity) (entity).update(&(entity))
 
 typedef enum {
-  TEAM1 = 1,
-  TEAM2 = 2,
-} EntityTeam;
+  FRIEND = 1,
+  FOE    = 2,
+  FOOD   = 3,
+} EntityType;
 
 typedef struct {
   Vec2 pos;
   Vec2 vel;
   uint8_t health;
-  EntityTeam team;
+  EntityType type;
   uint32_t lastUpdatedMs;
 } EntityState;
 
@@ -29,8 +30,6 @@ typedef struct Entity {
   EntityState state;
   void (*update)(struct Entity *entity);
 } Entity;
-
-extern const Entity *NULLEntity;
 
 void updateEntity(Entity *entity);
 

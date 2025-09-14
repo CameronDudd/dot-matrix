@@ -7,10 +7,6 @@
 
 #include "time.h"
 
-static const Entity _NULLEntity = {0};
-
-const Entity *NULLEntity = &_NULLEntity;
-
 void updateEntity(Entity *entity) {
   EntityState *state = &entity->state;
 
