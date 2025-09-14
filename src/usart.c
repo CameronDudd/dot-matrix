@@ -5,6 +5,9 @@
 
 #include "usart.h"
 
+#include <stdarg.h>
+
+#include "format.h"
 #include "gpio.h"
 #include "stm32f401xe.h"
 #include "time.h"
@@ -69,4 +72,30 @@ void usart2TxStr(const char *s) {
   while (*s) {
     usart2TxChar(*s++);
   }
+}
+
+void usart2Printf(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  for (const char *p = fmt; *p; ++p) {
+    if (*p == '%' && *(p + 1)) {
+      ++p;
+      if (*p == 'd') {
+        int val = va_arg(args, int);
+        for (const char *c = itoa(val); *c != '\0'; ++c) {
+          usart2TxChar(*c);
+        }
+      } else if (*p == 's') {
+        char *s = va_arg(args, char *);
+        while (*s != '\0') {
+          usart2TxChar(*s++);
+        }
+      } else {
+        usart2TxChar(*p);
+      }
+    } else {
+      usart2TxChar(*p);
+    }
+  }
+  va_end(args);
 }

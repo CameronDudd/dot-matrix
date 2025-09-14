@@ -18,5 +18,6 @@ void Usart2GlobalInterrupt_Handler(void);
 void usartInit(void);
 void usart2TxChar(const char c);
 void usart2TxStr(const char *s);
+void usart2Printf(const char *fmt, ...);
 
 #endif  // USART_H
