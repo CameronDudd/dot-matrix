@@ -5,9 +5,7 @@
 
 #include <stddef.h>
 
-#include "color.h"
 #include "display.h"
-#include "entity.h"
 #include "rand.h"
 #include "time.h"
 #include "usart.h"
@@ -26,34 +24,20 @@ static void init(void) {
 }
 
 int main(void) {
-  Entity creature = {
-      {
-          {1, 1},
-          {0, 0},
-          3,
-          TEAM1,
-          0,
-      },
-      NULL,
-  };
-
-  Entity creature2 = {
-      {
-          {0, 0},
-          {0, 0},
-          3,
-          TEAM2,
-          0,
-      },
-      NULL,
-  };
-
   init();
-  str2display(0, 0, "TEST", RED);
-  worldAddCreature(&creature);
-  worldAddCreature(&creature2);
+  int lastUpdatedTs = 0;
   while (1) {
-    drawWorld(&world);
+    if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) / 1000 >= 60)) {
+      lastUpdatedTs = epochMs();
+      clearDisplay();
+      for (int i = 0; i < 3000; ++i) {
+        int w = randRange(1, 5);
+        int h = randRange(1, 5);
+        int x = randRange(0, DISPLAY_COLS - w);
+        int y = randRange(0, DISPLAY_ROWS - h);
+        drawRect(x, y, w, h, randColor());
+      }
+    }
     renderDisplay();
   }
 }

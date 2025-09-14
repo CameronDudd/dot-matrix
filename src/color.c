@@ -14,19 +14,19 @@ static const RGBColor _BLACK = {
 };
 
 static const RGBColor _RED = {
-    .r = BRTMAX,
+    .r = BRT1,
     .g = 0,
     .b = 0,
 };
 
 static const RGBColor _GREEN = {
     .r = 0,
-    .g = BRTMAX,
+    .g = BRT1,
     .b = 0,
 };
 
 static const RGBColor _YELLOW = {
-    .r = BRTMAX,
+    .r = BRT1,
     .g = 0,
     .b = 0,
 };
@@ -34,25 +34,25 @@ static const RGBColor _YELLOW = {
 static const RGBColor _BLUE = {
     .r = 0,
     .g = 0,
-    .b = BRTMAX,
+    .b = BRT1,
 };
 
 static const RGBColor _MAGENTA = {
-    .r = BRTMAX,
+    .r = BRT1,
     .g = 0,
-    .b = BRTMAX,
+    .b = BRT1,
 };
 
 static const RGBColor _CYAN = {
     .r = 0,
-    .g = BRTMAX,
-    .b = BRTMAX,
+    .g = BRT1,
+    .b = BRT1,
 };
 
 static const RGBColor _WHITE = {
-    .r = BRTMAX,
-    .g = BRTMAX,
-    .b = BRTMAX,
+    .r = BRT1,
+    .g = BRT1,
+    .b = BRT1,
 };
 
 const RGBColor *BLACK   = &_BLACK;
