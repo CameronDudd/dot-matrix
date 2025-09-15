@@ -13,6 +13,6 @@
 
 extern uint64_t *conwayGrid;
 
-void conwayUpdate(void);
+void updateConway(void);
 
 #endif  // CONWAY_H

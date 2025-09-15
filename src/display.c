@@ -9,6 +9,7 @@
 
 #include "b64.h"
 #include "color.h"
+#include "conway.h"
 #include "font.h"
 #include "gpio.h"
 #include "stm32f401xe.h"
@@ -156,11 +157,11 @@ void drawCreature(Creature *creature) {
     drawRect(pos.x, pos.y + 1, 2, 1, creature->state.color);
   }
 
-  // Horizontal
-  if (vel.x < 0) {
-    drawRect(pos.x, pos.y, 1, 2, creature->state.color);
-  } else if (vel.x > 0) {
-    drawRect(pos.x + 1, pos.y, 1, 2, creature->state.color);
+void drawConway(void) {
+  for (int row = 0; row < CONWAY_ROWS; ++row) {
+    for (int col = 0; col < CONWAY_COLS; ++col) {
+      frameBuffer[row][col] = (conwayGrid[row] & ((int64_t)1 << (63 - col))) ? WHITE : BLACK;
+    }
   }
 }
 
