@@ -184,9 +184,9 @@ void char2display(const int col, const int row, const char c, const RGBColor *co
   }
 }
 
-void str2display(const int row, const int col, const char *str, const RGBColor *color) {
-  int curRow = row;
-  int curCol = col;
+void str2display(const int x, const int y, const char *str, const RGBColor *color) {
+  int curRow = y;
+  int curCol = x;
   for (const char *c = str; *c != '\0'; ++c) {
     char2display(curCol, curRow, *c, color);
     if (*c != ' ') {
