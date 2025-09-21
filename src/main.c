@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 
+#include "animation.h"
 #include "conway.h"
 #include "display.h"
 #include "rand.h"
@@ -18,16 +19,17 @@ static void init(void) {
   usartInit();
   randInit();
   displayInit();
+  animationInit();
 }
 
 int main(void) {
   init();
   int lastUpdatedTs = 0;
   while (1) {
-    if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 30)) {
+    if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 10)) {
       lastUpdatedTs = epochMs();
-      drawConway();
-      updateConway();
+      drawAnimationBuff();
+      updateAnimation();
     }
     renderDisplay();
   }
