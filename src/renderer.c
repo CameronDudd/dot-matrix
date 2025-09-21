@@ -10,6 +10,8 @@
 #include "font.h"
 #include "usart.h"
 
+#define ABS(x) (((x) < 0) ? (-(x)) : (x))
+
 const Font *font = &simpleFont;
 const RGBColor *frameBuffer[BUFF_ROWS][BUFF_COLS];
 
@@ -27,6 +29,72 @@ void rendererInit(void) {
 }
 
 // Drawing funcs
+static void _drawBresenhamLineLow(int x0, int y0, int x1, int y1) {
+  // Bresenham's line algorithm
+  // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+  int dx = x1 - x0;
+  int dy = y1 - y0;
+  int yi = 1;
+  if (dy < 0) {
+    yi = -1;
+    dy = -dy;
+  }
+  int D = (2 * dy) - dx;
+  int y = y0;
+  for (int x = x0; x <= x1; ++x) {
+    if ((0 <= y) && (y < BUFF_ROWS) && (0 <= x) && (x < BUFF_COLS)) frameBuffer[BUFF_ROWS - 1 - y][x] = WHITE;
+    if (D > 0) {
+      y += yi;
+      D += (2 * (dy - dx));
+    } else {
+      D += 2 * dy;
+    }
+  }
+}
+
+static void _drawBresenhamLineHigh(int x0, int y0, int x1, int y1) {
+  // Bresenham's line algorithm
+  // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+  int dx = x1 - x0;
+  int dy = y1 - y0;
+  int xi = 1;
+  if (dx < 0) {
+    xi = -1;
+    dx = -dx;
+  }
+  int D = (2 * dx) - dy;
+  int x = x0;
+  for (int y = y0; y <= y1; ++y) {
+    if ((0 <= y) && (y < BUFF_ROWS) && (0 <= x) && (x < BUFF_COLS)) frameBuffer[BUFF_ROWS - 1 - y][x] = WHITE;
+
+    if (D > 0) {
+      x += xi;
+      D += (2 * (dx - dy));
+    } else {
+      D += 2 * dx;
+    }
+  }
+}
+
+// TODO: Don't need complicated draw methods if dx = 0 and or dy = 0
+void drawLine(int x0, int y0, int x1, int y1) {
+  // Bresenham's line algorithm
+  // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+  if (ABS(y1 - y0) < ABS(x1 - x0)) {
+    if (x0 > x1) {
+      _drawBresenhamLineLow(x1, y1, x0, y0);
+    } else {
+      _drawBresenhamLineLow(x0, y0, x1, y1);
+    }
+  } else {
+    if (y0 > y1) {
+      _drawBresenhamLineHigh(x1, y1, x0, y0);
+    } else {
+      _drawBresenhamLineHigh(x0, y0, x1, y1);
+    }
+  }
+}
+
 void drawRect(int x, int y, int w, int h, const RGBColor *color) {
   for (int row = y; row < y + h; ++row) {
     for (int col = x; col < x + w; ++col) {
@@ -87,5 +155,14 @@ void drawUsartB64Buff(void) {
         frameBuffer[row][col] = WHITE;
       }
     }
+  }
+}
+
+void drawMesh2D(Mesh2D *mesh) {
+  for (unsigned int i = 0; i < mesh->numEdges; ++i) {
+    Edge edge  = mesh->edges[i];
+    Vec2 start = mesh->vertices[edge.start];
+    Vec2 end   = mesh->vertices[edge.end];
+    drawLine(start.x, start.y, end.x, end.y);
   }
 }
