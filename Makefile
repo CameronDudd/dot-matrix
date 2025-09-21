@@ -2,7 +2,7 @@ C       = arm-none-eabi-gcc
 C_OBJ   = arm-none-eabi-objcopy
 ST_FLASH = st-flash
 
-ANIMATION ?= CONWAY
+ANIMATION ?= PIPES
 
 CFLAGS = -D$(ANIMATION)=1 \
 	 -DSTM32F401xE \
