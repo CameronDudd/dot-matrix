@@ -5,6 +5,28 @@
 
 #include "geometry.h"
 
+#include "math.h"
+
+// 2D
+void rotateMesh2D(Mesh2D *mesh, float theta) {
+  // Rotating a point round the origin
+  // [ x']   [ cos(t) -sin(t) ] [ x ]
+  //       =
+  // [ y']   [ sin(t)  cos(t) ] [ y ]
+  // To rotate arbitrary point, translate to the origin, rotate and then translate back
+  float cx       = mesh->vertices[0].x;
+  float cy       = mesh->vertices[0].y;
+  float sintheta = sin(theta);
+  float costheta = cos(theta);
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec2 vertex         = mesh->vertices[i];
+    float x             = vertex.x - cx;
+    float y             = vertex.y - cy;
+    mesh->vertices[i].x = ((x * costheta) - (y * sintheta)) + cx;
+    mesh->vertices[i].y = ((x * sintheta) + (y * costheta)) + cy;
+  }
+}
+
 Mesh2D rectMesh(int x, int y, int w, int h) {
   return (Mesh2D){
       .vertices =
@@ -24,6 +46,61 @@ Mesh2D rectMesh(int x, int y, int w, int h) {
           },
       .numEdges = 4,
   };
+}
+
+// 3D
+void rollMesh3D(Mesh3D *mesh, float theta) {
+  // https://en.wikipedia.org/wiki/Rotation_matrix
+  // [ x']   [      1       0       0  ] [ x ]
+  // [ y'] = [      0   cos(t) -sin(t) ] [ y ]
+  // [ z']   [      0   sin(t)  cos(t) ] [ z ]
+  float cy       = mesh->vertices[0].y;
+  float cz       = mesh->vertices[0].z;
+  float sintheta = sin(theta);
+  float costheta = cos(theta);
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 vertex         = mesh->vertices[i];
+    float y             = vertex.y - cy;
+    float z             = vertex.z - cz;
+    mesh->vertices[i].y = ((costheta * y) - (sintheta * z)) + cy;
+    mesh->vertices[i].z = ((sintheta * y) + (costheta * z)) + cz;
+  }
+}
+
+void pitchMesh3D(Mesh3D *mesh, float theta) {
+  // https://en.wikipedia.org/wiki/Rotation_matrix
+  // [ x']   [  cos(t)      0   sin(t) ] [ x ]
+  // [ y'] = [      0       1       0  ] [ y ]
+  // [ z']   [ -sin(t)      0   cos(t) ] [ z ]
+  float cx       = mesh->vertices[0].x;
+  float cz       = mesh->vertices[0].z;
+  float sintheta = sin(theta);
+  float costheta = cos(theta);
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 vertex         = mesh->vertices[i];
+    float x             = vertex.x - cx;
+    float z             = vertex.z - cz;
+    mesh->vertices[i].x = ((costheta * x) + (sintheta * z)) + cx;
+    mesh->vertices[i].z = ((-sintheta * x) + (costheta * z)) + cz;
+  }
+}
+
+void yawMesh3D(Mesh3D *mesh, float theta) {
+  // https://en.wikipedia.org/wiki/Rotation_matrix
+  // [ x']   [  cos(t) -sin(t)      0  ] [ x ]
+  // [ y'] = [  sin(t)  cos(t)      0  ] [ y ]
+  // [ z']   [      0       0       1  ] [ z ]
+  float cx       = mesh->vertices[0].x;
+  float cy       = mesh->vertices[0].y;
+  float sintheta = sin(theta);
+  float costheta = cos(theta);
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 vertex         = mesh->vertices[i];
+    float x             = vertex.x - cx;
+    float y             = vertex.y - cy;
+    mesh->vertices[i].x = ((costheta * x) + (-sintheta * y)) + cx;
+    mesh->vertices[i].y = ((sintheta * x) + (costheta * y)) + cy;
+  }
 }
 
 Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d) {

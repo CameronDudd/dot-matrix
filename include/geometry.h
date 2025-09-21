@@ -30,7 +30,14 @@ typedef struct {
   unsigned int numEdges;
 } Mesh3D;
 
+// 2D
+void rotateMesh2D(Mesh2D *mesh, float theta);
 Mesh2D rectMesh(int x, int y, int w, int h);
+
+// 3D
+void rollMesh3D(Mesh3D *mesh, float theta);
+void pitchMesh3D(Mesh3D *mesh, float theta);
+void yawMesh3D(Mesh3D *mesh, float theta);
 Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d);
 
 #endif
