@@ -58,6 +58,6 @@ Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d) {
               {6, 7},
               {7, 4},
           },
-      .numEdges = 5,
+      .numEdges = 12,
   };
 }
