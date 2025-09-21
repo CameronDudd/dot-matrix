@@ -7,17 +7,13 @@
 
 #include <stdint.h>
 
-#include "animation.h"
-#include "b64.h"
 #include "color.h"
-#include "conway.h"
-#include "font.h"
 #include "gpio.h"
+#include "renderer.h"
 #include "stm32f401xe.h"
 #include "time.h"
-#include "usart.h"
 
-#define HALF_DISPLAY_ROWS   32
+#define HALF_DISPLAY_ROWS   (DISPLAY_ROWS / 2)
 #define RENDER_SLEEP_BASE   3
 #define RENDER_SLEEP_OFFSET 3
 
@@ -57,11 +53,6 @@
 
 #define DISPLAY_OFF GPIOB->ODR |= OE_Msk;
 #define DISPLAY_ON  GPIOB->ODR &= ~OE_Msk
-
-const Font *font = &simpleFont;
-
-unsigned char monoBuff[512];
-static const RGBColor *frameBuffer[DISPLAY_ROWS][DISPLAY_COLS];
 
 void displayInit(void) {
   RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
@@ -121,78 +112,6 @@ void displayInit(void) {
 
   // set output disabled
   DISPLAY_OFF;
-
-  clearDisplay();
-}
-
-void clearDisplay(void) {
-  for (uint8_t row = 0; row < DISPLAY_ROWS; ++row) {
-    for (uint8_t col = 0; col < DISPLAY_COLS; ++col) {
-      frameBuffer[row][col] = BLACK;
-    }
-  }
-}
-
-void drawRect(int x, int y, int w, int h, const RGBColor *color) {
-  for (int row = y; row < y + h; ++row) {
-    for (int col = x; col < x + w; ++col) {
-      frameBuffer[row % DISPLAY_ROWS][col % DISPLAY_COLS] = color;
-    }
-  }
-}
-
-void drawAnimationBuff(void) {
-  for (int row = 0; row < ANIMATION_ROWS; ++row) {
-    for (int col = 0; col < ANIMATION_COLS; ++col) {
-      frameBuffer[row][col] = (animationGrid[row] & ((int64_t)1 << (63 - col))) ? WHITE : BLACK;
-    }
-  }
-}
-
-void char2display(const int col, const int row, const char c, const RGBColor *color) {
-  uint16_t charMap = simpleFont.map[(int)c];
-  if (charUnsupported(charMap)) {
-    charMap = simpleFont.map[0];
-  }
-  // If remainder of display cannot fit fast fail
-  if (((row + font->height) >= DISPLAY_ROWS) || ((col + font->width) >= DISPLAY_COLS)) {
-    return;
-  }
-  // Write character to buffer
-  for (int c = font->width - 1; c >= 0; --c) {
-    for (int r = font->height - 1; r >= 0; --r) {
-      int offset = ((font->width * font->height) - 1) - ((r * font->width) + c);
-      if ((charMap >> offset) & 1) {
-        frameBuffer[row + r][col + c] = color;
-      }
-    }
-  }
-}
-
-void str2display(const int x, const int y, const char *str, const RGBColor *color) {
-  int curRow = y;
-  int curCol = x;
-  for (const char *c = str; *c != '\0'; ++c) {
-    char2display(curCol, curRow, *c, color);
-    if (*c != ' ') {
-      curCol += font->width;
-    }
-    curCol++;
-  }
-}
-
-void recvBuff2display(void) {
-  b64Decode(monoBuff, (unsigned char *)recvBuff);
-  for (int row = 0; row < DISPLAY_ROWS; ++row) {
-    for (int col = 0; col < DISPLAY_COLS; ++col) {
-      int cell = (row * DISPLAY_COLS) + col;
-      int idx  = cell / 8;
-      int bit  = cell % 8;
-      if (monoBuff[idx] & (1u << bit)) {
-        frameBuffer[row][col] = WHITE;
-      }
-    }
-  }
 }
 
 static void _clearRGBTopLines(void) {

@@ -6,9 +6,9 @@
 #include <stddef.h>
 
 #include "animation.h"
-#include "conway.h"
 #include "display.h"
 #include "rand.h"
+#include "renderer.h"
 #include "time.h"
 #include "usart.h"
 
@@ -19,6 +19,7 @@ static void init(void) {
   usartInit();
   randInit();
   displayInit();
+  rendererInit();
   animationInit();
 }
 
@@ -28,7 +29,7 @@ int main(void) {
   while (1) {
     if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 10)) {
       lastUpdatedTs = epochMs();
-      drawAnimationBuff();
+      drawAnimationBuffer();
       updateAnimation();
     }
     renderDisplay();
