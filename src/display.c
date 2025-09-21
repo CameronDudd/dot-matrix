@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 
+#include "animation.h"
 #include "b64.h"
 #include "color.h"
 #include "conway.h"
@@ -140,10 +141,10 @@ void drawRect(int x, int y, int w, int h, const RGBColor *color) {
   }
 }
 
-void drawConway(void) {
-  for (int row = 0; row < CONWAY_ROWS; ++row) {
-    for (int col = 0; col < CONWAY_COLS; ++col) {
-      frameBuffer[row][col] = (conwayGrid[row] & ((int64_t)1 << (63 - col))) ? WHITE : BLACK;
+void drawAnimationBuff(void) {
+  for (int row = 0; row < ANIMATION_ROWS; ++row) {
+    for (int col = 0; col < ANIMATION_COLS; ++col) {
+      frameBuffer[row][col] = (animationGrid[row] & ((int64_t)1 << (63 - col))) ? WHITE : BLACK;
     }
   }
 }
