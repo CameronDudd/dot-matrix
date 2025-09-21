@@ -8,6 +8,7 @@
 #include "animation.h"
 #include "b64.h"
 #include "font.h"
+#include "math.h"
 #include "usart.h"
 
 #define ABS(x) (((x) < 0) ? (-(x)) : (x))
@@ -164,5 +165,22 @@ void drawMesh2D(Mesh2D *mesh) {
     Vec2 start = mesh->vertices[edge.start];
     Vec2 end   = mesh->vertices[edge.end];
     drawLine(start.x, start.y, end.x, end.y);
+  }
+}
+
+void drawMesh3DIsometric(Mesh3D *mesh) {
+  // https://en.wikipedia.org/wiki/Isometric_projection
+  // [ x']      1    [  sqrt(3)       0  -sqrt(3) ] [ x ]
+  // [ y'] = ------- [       1        2        1  ] [ y ]
+  // [ z']   sqrt(6) [  sqrt(2) -sqrt(2) -sqrt(2) ] [ z ]
+  for (unsigned int i = 0; i < mesh->numEdges; ++i) {
+    Edge edge    = mesh->edges[i];
+    Vec3 start   = mesh->vertices[edge.start];
+    Vec3 end     = mesh->vertices[edge.end];
+    float startx = RECIPROCAL_SQRT6 * ((SQRT3 * start.x) - (SQRT3 * start.z));
+    float starty = RECIPROCAL_SQRT6 * (start.x + (2 * start.y) + start.z);
+    float endx   = RECIPROCAL_SQRT6 * ((SQRT3 * end.x) - (SQRT3 * end.z));
+    float endy   = RECIPROCAL_SQRT6 * (end.x + (2 * end.y) + end.z);
+    drawLine(startx, starty, endx, endy);
   }
 }

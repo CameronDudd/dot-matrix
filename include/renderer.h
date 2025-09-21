@@ -24,5 +24,6 @@ void drawChar(const int col, const int row, const char c, const RGBColor *color)
 void drawStr(const int x, const int y, const char *str, const RGBColor *color);
 void drawAnimationBuffer(void);
 void drawMesh2D(Mesh2D *mesh);
+void drawMesh3DIsometric(Mesh3D *mesh);
 
 #endif  // RENDERER_H
