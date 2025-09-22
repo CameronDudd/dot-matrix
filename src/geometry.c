@@ -7,6 +7,8 @@
 
 #include "math.h"
 
+#define MIN(a, b) ((a < b) ? (a) : (b))
+
 // 2D
 void rotateMesh2D(Mesh2D *mesh, float theta) {
   // Rotating a point round the origin
@@ -65,6 +67,22 @@ Mesh2D triangleMesh(int x0, int y0, int x1, int y1, int x2, int y2) {
           },
       .numEdges = 3,
   };
+}
+
+Mesh2D regularNGonMesh(int cx, int cy, int r, int n) {
+  Mesh2D mesh;
+  float angleStep;
+  int maxN         = MIN(MAX_VERTICES, n);
+  mesh.numVertices = maxN;
+  mesh.numEdges    = maxN;
+  for (int i = 0; i < maxN; ++i) {
+    angleStep           = 360.0f / maxN;
+    mesh.vertices[i].x  = cx + r * cos(angleStep * i);
+    mesh.vertices[i].y  = cy + r * sin(angleStep * i);
+    mesh.edges[i].start = i;
+    mesh.edges[i].end   = (i + 1) % maxN;
+  }
+  return mesh;
 }
 
 // 3D

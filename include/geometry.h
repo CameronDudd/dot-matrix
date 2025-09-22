@@ -8,8 +8,8 @@
 
 #include "vec.h"
 
-#define MAX_VERTICES 10
-#define MAX_EDGES    30
+#define MAX_VERTICES 50
+#define MAX_EDGES    150
 
 typedef struct {
   int start;
@@ -34,6 +34,7 @@ typedef struct {
 void rotateMesh2D(Mesh2D *mesh, float theta);
 Mesh2D rectMesh(int x, int y, int w, int h);
 Mesh2D triangleMesh(int x0, int y0, int x1, int y1, int x2, int y2);
+Mesh2D regularNGonMesh(int cx, int cy, int r, int n);
 
 // 3D
 void rollMesh3D(Mesh3D *mesh, float theta);
