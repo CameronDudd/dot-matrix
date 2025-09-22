@@ -48,6 +48,25 @@ Mesh2D rectMesh(int x, int y, int w, int h) {
   };
 }
 
+Mesh2D triangleMesh(int x0, int y0, int x1, int y1, int x2, int y2) {
+  return (Mesh2D){
+      .vertices =
+          {
+              {x0, y0},
+              {x1, y1},
+              {x2, y2},
+          },
+      .numVertices = 3,
+      .edges =
+          {
+              {0, 1},
+              {1, 2},
+              {2, 0},
+          },
+      .numEdges = 3,
+  };
+}
+
 // 3D
 void rollMesh3D(Mesh3D *mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
