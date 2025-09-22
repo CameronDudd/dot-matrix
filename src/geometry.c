@@ -68,11 +68,12 @@ Mesh2D triangleMesh(int x0, int y0, int x1, int y1, int x2, int y2) {
 }
 
 // 3D
-void rollMesh3D(Mesh3D *mesh, float theta) {
+void pitchMesh3D(Mesh3D *mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
   // [ x']   [      1       0       0  ] [ x ]
   // [ y'] = [      0   cos(t) -sin(t) ] [ y ]
   // [ z']   [      0   sin(t)  cos(t) ] [ z ]
+  // x is horizontally across up so pitch keeps x-axis constant
   float cy       = mesh->vertices[0].y;
   float cz       = mesh->vertices[0].z;
   float sintheta = sin(theta);
@@ -86,29 +87,12 @@ void rollMesh3D(Mesh3D *mesh, float theta) {
   }
 }
 
-void pitchMesh3D(Mesh3D *mesh, float theta) {
-  // https://en.wikipedia.org/wiki/Rotation_matrix
-  // [ x']   [  cos(t)      0   sin(t) ] [ x ]
-  // [ y'] = [      0       1       0  ] [ y ]
-  // [ z']   [ -sin(t)      0   cos(t) ] [ z ]
-  float cx       = mesh->vertices[0].x;
-  float cz       = mesh->vertices[0].z;
-  float sintheta = sin(theta);
-  float costheta = cos(theta);
-  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
-    Vec3 vertex         = mesh->vertices[i];
-    float x             = vertex.x - cx;
-    float z             = vertex.z - cz;
-    mesh->vertices[i].x = ((costheta * x) + (sintheta * z)) + cx;
-    mesh->vertices[i].z = ((-sintheta * x) + (costheta * z)) + cz;
-  }
-}
-
-void yawMesh3D(Mesh3D *mesh, float theta) {
+void rollMesh3D(Mesh3D *mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
   // [ x']   [  cos(t) -sin(t)      0  ] [ x ]
   // [ y'] = [  sin(t)  cos(t)      0  ] [ y ]
   // [ z']   [      0       0       1  ] [ z ]
+  // z is out of the screen roll keeps z-axis constant
   float cx       = mesh->vertices[0].x;
   float cy       = mesh->vertices[0].y;
   float sintheta = sin(theta);
@@ -119,6 +103,25 @@ void yawMesh3D(Mesh3D *mesh, float theta) {
     float y             = vertex.y - cy;
     mesh->vertices[i].x = ((costheta * x) + (-sintheta * y)) + cx;
     mesh->vertices[i].y = ((sintheta * x) + (costheta * y)) + cy;
+  }
+}
+
+void yawMesh3D(Mesh3D *mesh, float theta) {
+  // https://en.wikipedia.org/wiki/Rotation_matrix
+  // [ x']   [  cos(t)      0   sin(t) ] [ x ]
+  // [ y'] = [      0       1       0  ] [ y ]
+  // [ z']   [ -sin(t)      0   cos(t) ] [ z ]
+  // y is vertically up so yaw keeps y-axis constant
+  float cx       = mesh->vertices[0].x;
+  float cz       = mesh->vertices[0].z;
+  float sintheta = sin(theta);
+  float costheta = cos(theta);
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 vertex         = mesh->vertices[i];
+    float x             = vertex.x - cx;
+    float z             = vertex.z - cz;
+    mesh->vertices[i].x = ((costheta * x) + (sintheta * z)) + cx;
+    mesh->vertices[i].z = ((-sintheta * x) + (costheta * z)) + cz;
   }
 }
 
