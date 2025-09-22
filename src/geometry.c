@@ -160,3 +160,31 @@ Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d) {
       .numEdges = 12,
   };
 }
+
+Mesh3D pyramidMesh(int x, int y, int z, int w, int d, int h) {
+  return (Mesh3D){
+      .vertices =
+          {
+              {x, y, z},
+              {x + w, y, z},
+              {x + w, y, z + d},
+              {x, y, z + d},
+              {x + (float)w / 2, y + h, z + (float)d / 2},
+          },
+      .numVertices = 5,
+      .edges =
+          {
+              // Floor-face
+              {0, 1},
+              {1, 2},
+              {2, 3},
+              {3, 0},
+              // Peak-faces
+              {0, 4},
+              {1, 4},
+              {2, 4},
+              {3, 4},
+          },
+      .numEdges = 8,
+  };
+}

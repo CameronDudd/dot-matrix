@@ -40,5 +40,6 @@ void rollMesh3D(Mesh3D *mesh, float theta);
 void pitchMesh3D(Mesh3D *mesh, float theta);
 void yawMesh3D(Mesh3D *mesh, float theta);
 Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d);
+Mesh3D pyramidMesh(int x, int y, int z, int w, int d, int h);
 
 #endif
