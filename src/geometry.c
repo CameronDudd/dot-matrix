@@ -7,8 +7,6 @@
 
 #include "math.h"
 
-#define MIN(a, b) ((a < b) ? (a) : (b))
-
 // 2D
 void rotateMesh2D(Mesh2D *mesh, float theta) {
   // Rotating a point round the origin

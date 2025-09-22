@@ -13,6 +13,9 @@
 
 #define TRIG_LOOKUP_SIZE 360
 
+#define MIN(a, b) ((a < b) ? (a) : (b))
+#define MAX(a, b) ((a > b) ? (a) : (b))
+
 float sin(float theta);
 float cos(float theta);
 
