@@ -26,7 +26,7 @@ static void init(void) {
 
 int main(void) {
   init();
-  Mesh3D cube       = cuboidMesh(45, -13, 0, 30, 30, 30);
+  Mesh3D cube       = cuboidMesh(32, 7, 0, 30, 30, 30);
   int lastUpdatedTs = 0;
   while (1) {
     if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 30)) {
