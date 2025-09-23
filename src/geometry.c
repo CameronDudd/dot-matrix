@@ -204,3 +204,47 @@ Mesh3D pyramidMesh(int x, int y, int z, int w, int d, int h) {
       .numEdges = 8,
   };
 }
+
+Mesh3D sphereMesh(int cx, int cy, int cz, int r, int n) {
+  Mesh3D mesh;
+  mesh.vertices[0].x = cx;
+  mesh.vertices[0].y = cy + r;
+  mesh.vertices[0].z = cz;
+  mesh.numVertices   = 1;
+  mesh.numEdges      = 0;
+  for (int i = 1; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      float lat                         = 180.0f * ((float)i / n);
+      float lon                         = 360.0f * ((float)j / n);
+      mesh.vertices[mesh.numVertices].x = cx + (r * sin(lat) * cos(lon));
+      mesh.vertices[mesh.numVertices].y = cy + (r * cos(lat));
+      mesh.vertices[mesh.numVertices].z = cz + (r * sin(lat) * sin(lon));
+      ++mesh.numVertices;
+
+      // Longitude edges
+      mesh.edges[mesh.numEdges].start = ((i - 1) * n) + j + 1;
+      mesh.edges[mesh.numEdges].end   = ((i - 1) * n) + ((j + 1) % n) + 1;
+      ++mesh.numEdges;
+
+      // Latitude edges
+      if (i == 1) {  // Connect to north pole
+        mesh.edges[mesh.numEdges].start = 0;
+        mesh.edges[mesh.numEdges].end   = j + 1;
+      } else {
+        mesh.edges[mesh.numEdges].start = ((i - 2) * n + j + 1);
+        mesh.edges[mesh.numEdges].end   = ((i - 1) * n + j + 1);
+      }
+      ++mesh.numEdges;
+    }
+  }
+  mesh.vertices[mesh.numVertices].x = cx;
+  mesh.vertices[mesh.numVertices].y = cy - r;
+  mesh.vertices[mesh.numVertices].z = cz;
+  for (int j = 0; j < n; ++j) {
+    mesh.edges[mesh.numEdges].start = ((n - 2) * n + j + 1);
+    mesh.edges[mesh.numEdges].end   = mesh.numVertices;
+    mesh.numEdges++;
+  }
+  ++mesh.numVertices;
+  return mesh;
+}
