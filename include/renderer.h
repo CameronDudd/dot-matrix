@@ -12,7 +12,7 @@
 #define BUFF_ROWS 64
 #define BUFF_COLS 64
 
-const RGBColor *frameBuffer[BUFF_ROWS][BUFF_COLS];
+extern const RGBColor* frameBuffer[BUFF_ROWS][BUFF_COLS];
 
 // Buffer management
 void clearFrameBuffer(void);

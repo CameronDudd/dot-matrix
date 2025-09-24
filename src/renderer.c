@@ -13,8 +13,8 @@
 
 #define ABS(x) (((x) < 0) ? (-(x)) : (x))
 
-const Font *font = &simpleFont;
-const RGBColor *frameBuffer[BUFF_ROWS][BUFF_COLS];
+const Font* font = &simpleFont;
+const RGBColor* frameBuffer[BUFF_ROWS][BUFF_COLS];
 
 // Buffer management
 void clearFrameBuffer(void) {
