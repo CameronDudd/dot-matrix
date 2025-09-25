@@ -21,7 +21,9 @@ LDFLAGS = -Tlinker.ld \
           -mfloat-abi=hard
 
 SRC     = $(wildcard src/*.c)
-OBJ     = $(patsubst src/%.c, bin/%.o, $(SRC))
+DATA_FILES = $(wildcard data/poly[1-8].dat)
+DATA_OBJ = $(patsubst data/%.dat, bin/%_dat.o, $(DATA_FILES))
+OBJ     = $(patsubst src/%.c, bin/%.o, $(SRC)) $(DATA_OBJ)
 TARGET  = main.elf
 BIN     = main.bin
 
@@ -29,6 +31,10 @@ all: $(BIN)
 
 $(TARGET): $(OBJ)
 	$(C) $(LDFLAGS) -o $@ $^
+
+
+bin/%_dat.o: data/%.dat | bin
+	$(C_OBJ) -I binary -O elf32-littlearm --binary-architecture=armv7e-m $< $@
 
 bin/%.o: src/%.c | bin
 	$(C) $(CFLAGS) -c $< -o $@
