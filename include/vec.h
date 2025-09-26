@@ -17,4 +17,10 @@ typedef struct {
   float z;
 } Vec3;
 
+float dot2(Vec2 a, Vec2 b);
+float cross2(Vec2 a, Vec2 b);
+
+float dot3(Vec3 a, Vec3 b);
+Vec3 cross3(Vec3 a, Vec3 b);
+
 #endif  // VEC_H
