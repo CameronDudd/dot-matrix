@@ -13,6 +13,13 @@ float cross2(Vec2 a, Vec2 b) {
   return (a.x * b.y) - (a.y * b.x);
 }
 
+Vec2 perpendicular2(Vec2 vec) {  // Counter-Clockwise
+  return (Vec2){
+      .x = -vec.y,
+      .y = vec.x,
+  };
+}
+
 float dot3(Vec3 a, Vec3 b) {
   return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
