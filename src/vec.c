@@ -5,6 +5,20 @@
 
 #include "vec.h"
 
+Vec2 add2(Vec2 a, Vec2 b) {  // a + b
+  return (Vec2){
+      .x = a.x + b.x,
+      .y = a.y + b.y,
+  };
+}
+
+Vec2 sub2(Vec2 a, Vec2 b) {  // a - b
+  return (Vec2){
+      .x = a.x - b.x,
+      .y = a.y - b.y,
+  };
+}
+
 float dot2(Vec2 a, Vec2 b) {
   return (a.x * b.x) + (a.y * b.y);
 }
