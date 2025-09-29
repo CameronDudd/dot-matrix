@@ -8,63 +8,65 @@
 
 #include <stdint.h>
 
+#include "geometry.h"
+
 #define MAX_DATA_LINES 50
 
-#define poly1_start _binary_data_poly1_dat_start
-#define poly1_end   _binary_data_poly1_dat_end
-#define poly1_size  _binary_data_poly1_dat_size
-extern const uint8_t poly1_start[];
-extern const uint8_t poly1_end[];
-extern const uint8_t poly1_size;
+#define poly1Start _binary_data_poly1_dat_start
+#define poly1End   _binary_data_poly1_dat_end
+#define poly1Size  _binary_data_poly1_dat_size
+extern const uint8_t poly1Start[];
+extern const uint8_t poly1End[];
+extern const uint8_t poly1Size;
 
-#define poly2_start _binary_data_poly2_dat_start
-#define poly2_end   _binary_data_poly2_dat_end
-#define poly2_size  _binary_data_poly2_dat_size
-extern const uint8_t poly2_start[];
-extern const uint8_t poly2_end[];
-extern const uint8_t poly2_size;
+#define poly2Start _binary_data_poly2_dat_start
+#define poly2End   _binary_data_poly2_dat_end
+#define poly2Size  _binary_data_poly2_dat_size
+extern const uint8_t poly2Start[];
+extern const uint8_t poly2End[];
+extern const uint8_t poly2Size;
 
-#define poly3_start _binary_data_poly3_dat_start
-#define poly3_end   _binary_data_poly3_dat_end
-#define poly3_size  _binary_data_poly3_dat_size
-extern const uint8_t poly3_start[];
-extern const uint8_t poly3_end[];
-extern const uint8_t poly3_size;
+#define poly3Start _binary_data_poly3_dat_start
+#define poly3End   _binary_data_poly3_dat_end
+#define poly3Size  _binary_data_poly3_dat_size
+extern const uint8_t poly3Start[];
+extern const uint8_t poly3End[];
+extern const uint8_t poly3Size;
 
-#define poly4_start _binary_data_poly4_dat_start
-#define poly4_end   _binary_data_poly4_dat_end
-#define poly4_size  _binary_data_poly4_dat_size
-extern const uint8_t poly4_start[];
-extern const uint8_t poly4_end[];
-extern const uint8_t poly4_size;
+#define poly4Start _binary_data_poly4_dat_start
+#define poly4End   _binary_data_poly4_dat_end
+#define poly4Size  _binary_data_poly4_dat_size
+extern const uint8_t poly4Start[];
+extern const uint8_t poly4End[];
+extern const uint8_t poly4Size;
 
-#define poly5_start _binary_data_poly5_dat_start
-#define poly5_end   _binary_data_poly5_dat_end
-#define poly5_size  _binary_data_poly5_dat_size
-extern const uint8_t poly5_start[];
-extern const uint8_t poly5_end[];
-extern const uint8_t poly5_size;
+#define poly5Start _binary_data_poly5_dat_start
+#define poly5End   _binary_data_poly5_dat_end
+#define poly5Size  _binary_data_poly5_dat_size
+extern const uint8_t poly5Start[];
+extern const uint8_t poly5End[];
+extern const uint8_t poly5Size;
 
-#define poly6_start _binary_data_poly6_dat_start
-#define poly6_end   _binary_data_poly6_dat_end
-#define poly6_size  _binary_data_poly6_dat_size
-extern const uint8_t poly6_start[];
-extern const uint8_t poly6_end[];
-extern const uint8_t poly6_size;
+#define poly6Start _binary_data_poly6_dat_start
+#define poly6End   _binary_data_poly6_dat_end
+#define poly6Size  _binary_data_poly6_dat_size
+extern const uint8_t poly6Start[];
+extern const uint8_t poly6End[];
+extern const uint8_t poly6Size;
 
-#define poly7_start _binary_data_poly7_dat_start
-#define poly7_end   _binary_data_poly7_dat_end
-#define poly7_size  _binary_data_poly7_dat_size
-extern const uint8_t poly7_start[];
-extern const uint8_t poly7_end[];
-extern const uint8_t poly7_size;
+#define poly7Start _binary_data_poly7_dat_start
+#define poly7End   _binary_data_poly7_dat_end
+#define poly7Size  _binary_data_poly7_dat_size
+extern const uint8_t poly7Start[];
+extern const uint8_t poly7End[];
+extern const uint8_t poly7Size;
 
-#define poly8_start _binary_data_poly8_dat_start
-#define poly8_end   _binary_data_poly8_dat_end
-#define poly8_size  _binary_data_poly8_dat_size
-extern const uint8_t poly8_start[];
-extern const uint8_t poly8_end[];
-extern const uint8_t poly8_size;
+#define poly8Start _binary_data_poly8_dat_start
+#define poly8End   _binary_data_poly8_dat_end
+#define poly8Size  _binary_data_poly8_dat_size
+extern const uint8_t poly8Start[];
+extern const uint8_t poly8End[];
+extern const uint8_t poly8Size;
 
 typedef struct __attribute__((packed)) {
   uint8_t tag;  // 1
@@ -91,5 +93,7 @@ typedef struct {
 } PolyLine;
 
 PolyLine readPolyData(const uint8_t* start, const uint8_t* end);
+Mesh2D polyData2Mesh2D(const uint8_t* start, const uint8_t* end);
+Mesh3D polyData2Mesh3D(const uint8_t* start, const uint8_t* end);
 
 #endif  // DATA_H
