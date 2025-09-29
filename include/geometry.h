@@ -31,6 +31,7 @@ typedef struct {
 } Mesh3D;
 
 // 2D
+int pointInTriangleMesh2D(Mesh2D *mesh, Vec2 p);
 void rotateMesh2D(Mesh2D *mesh, float theta);
 Mesh2D rectMesh(int x, int y, int w, int h);
 Mesh2D triangleMesh(int x0, int y0, int x1, int y1, int x2, int y2);

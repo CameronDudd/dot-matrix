@@ -6,8 +6,28 @@
 #include "geometry.h"
 
 #include "math.h"
+#include "vec.h"
 
 // 2D
+int pointInTriangleMesh2D(Mesh2D *mesh, Vec2 p) {
+  Vec2 a = {
+      .x = mesh->vertices[0].x,
+      .y = mesh->vertices[0].y,
+  };
+  Vec2 b = {
+      .x = mesh->vertices[1].x,
+      .y = mesh->vertices[1].y,
+  };
+  Vec2 c = {
+      .x = mesh->vertices[2].x,
+      .y = mesh->vertices[2].y,
+  };
+  int sideAB = pointOnLeftOfLine(a, b, p);
+  int sideBC = pointOnLeftOfLine(b, c, p);
+  int sideCA = pointOnLeftOfLine(c, a, p);
+  return (sideAB == sideBC) && (sideBC == sideCA);
+}
+
 void rotateMesh2D(Mesh2D *mesh, float theta) {
   // Rotating a point round the origin
   // [ x']   [ cos(t) -sin(t) ] [ x ]
