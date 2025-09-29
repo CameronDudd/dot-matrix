@@ -8,13 +8,14 @@
 #include "animation.h"
 #include "b64.h"
 #include "font.h"
+#include "geometry.h"
 #include "math.h"
 #include "usart.h"
 
 #define ABS(x) (((x) < 0) ? (-(x)) : (x))
 
-const Font* font = &simpleFont;
-const RGBColor* frameBuffer[BUFF_ROWS][BUFF_COLS];
+const Font *font = &simpleFont;
+const RGBColor *frameBuffer[BUFF_ROWS][BUFF_COLS];
 
 // Buffer management
 void clearFrameBuffer(void) {
@@ -165,6 +166,26 @@ void drawMesh2D(Mesh2D *mesh) {
     Vec2 start = mesh->vertices[edge.start];
     Vec2 end   = mesh->vertices[edge.end];
     drawLine(start.x, start.y, end.x, end.y);
+  }
+}
+
+void drawMesh2DFill(Mesh2D *mesh) {
+  float minX = INF;
+  float maxX = NEG_INF;
+  float minY = INF;
+  float maxY = NEG_INF;
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    minX = MIN(minX, mesh->vertices[i].x);
+    maxX = MAX(maxX, mesh->vertices[i].x);
+    minY = MIN(minY, mesh->vertices[i].y);
+    maxY = MAX(maxY, mesh->vertices[i].y);
+  }
+  for (int row = (int)minY; row < (int)(maxY + 1); ++row) {
+    for (int col = (int)minX; col < (int)(maxX + 1); ++col) {
+      if (pointInTriangleMesh2D(mesh, (Vec2){col, row})) {
+        frameBuffer[BUFF_ROWS - row][col] = WHITE;
+      }
+    }
   }
 }
 
