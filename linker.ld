@@ -32,7 +32,16 @@ SECTIONS
     _ebss = .;
   } >ram
 
-  end = .;
+  .rodata_inf : {
+    . = ALIGN(4);
+    __rodata_inf_start = .;
+    LONG(0x7F800000)   /* +INF */
+    LONG(0xFF800000)   /* -INF */
+    __rodata_inf_end = .;
+} >rom
+
 }
 
 PROVIDE(_stack = ORIGIN(ram) + LENGTH(ram));
+PROVIDE(INF_addr = __rodata_inf_start);
+PROVIDE(NEG_INF_addr = __rodata_inf_start + 4);
