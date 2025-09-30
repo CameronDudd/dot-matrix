@@ -194,9 +194,9 @@ void drawMesh3DIsometric(Mesh3D *mesh) {
   // [ x']      1    [  sqrt(3)       0  -sqrt(3) ] [ x ]
   // [ y'] = ------- [       1        2        1  ] [ y ]
   // [ z']   sqrt(6) [  sqrt(2) -sqrt(2) -sqrt(2) ] [ z ]
-  float cx = mesh->vertices[0].x;
-  float cy = mesh->vertices[0].y;
-  float cz = mesh->vertices[0].z;
+  float cx = mesh->centroid.x;
+  float cy = mesh->centroid.y;
+  float cz = mesh->centroid.z;
   for (unsigned int i = 0; i < mesh->numEdges; ++i) {
     Edge edge    = mesh->edges[i];
     Vec3 start   = mesh->vertices[edge.start];
