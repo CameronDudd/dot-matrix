@@ -33,7 +33,7 @@ int main(void) {
     if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 30)) {
       lastUpdatedTs = epochMs();
       clearFrameBuffer();
-      yawMesh3D(&poly, 1);
+      yawMesh3D(&poly, 2);
       drawMesh3DIsometric(&poly);
     }
     renderDisplay();
