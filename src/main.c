@@ -6,6 +6,7 @@
 #include <stddef.h>
 
 #include "animation.h"
+#include "data.h"
 #include "display.h"
 #include "geometry.h"
 #include "rand.h"
@@ -26,16 +27,14 @@ static void init(void) {
 
 int main(void) {
   init();
-  Mesh3D cube       = cuboidMesh(32, 7, 0, 30, 30, 30);
+  Mesh3D poly       = polyData2Mesh3D(poly1Start, poly1End, 10);
   int lastUpdatedTs = 0;
   while (1) {
     if ((lastUpdatedTs == 0) || ((epochMs() - lastUpdatedTs) >= 30)) {
       lastUpdatedTs = epochMs();
-      rollMesh3D(&cube, 1);
-      pitchMesh3D(&cube, 1);
-      yawMesh3D(&cube, 1);
       clearFrameBuffer();
-      drawMesh3DIsometric(&cube);
+      yawMesh3D(&poly, 1);
+      drawMesh3DIsometric(&poly);
     }
     renderDisplay();
   }
