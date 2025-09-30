@@ -8,8 +8,8 @@
 
 #include "vec.h"
 
-#define MAX_VERTICES 220
-#define MAX_EDGES    660
+#define MAX_VERTICES 300
+#define MAX_EDGES    900
 
 typedef struct {
   int start;
@@ -45,6 +45,7 @@ Vec3 centroidMesh3D(Mesh3D* mesh);
 void rollMesh3D(Mesh3D* mesh, float theta);
 void pitchMesh3D(Mesh3D* mesh, float theta);
 void yawMesh3D(Mesh3D* mesh, float theta);
+void centerMesh3D(Mesh3D* mesh);
 Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d);
 Mesh3D pyramidMesh(int x, int y, int z, int w, int d, int h);
 Mesh3D sphereMesh(int cx, int cy, int cz, int r, int n);

@@ -53,8 +53,8 @@ void rotateMesh2D(Mesh2D* mesh, float theta) {
   // To rotate arbitrary point, translate to the origin, rotate and then translate back
   float cx       = mesh->vertices[0].x;
   float cy       = mesh->vertices[0].y;
-  float sintheta = sin(theta);
-  float costheta = cos(theta);
+  float sintheta = sind(theta);
+  float costheta = cosd(theta);
   for (unsigned int i = 0; i < mesh->numVertices; ++i) {
     Vec2 vertex         = mesh->vertices[i];
     float x             = vertex.x - cx;
@@ -112,8 +112,8 @@ Mesh2D regularNGonMesh(int cx, int cy, int r, int n) {
   mesh.numEdges    = maxN;
   for (int i = 0; i < maxN; ++i) {
     angleStep           = 360.0f / maxN;
-    mesh.vertices[i].x  = cx + r * cos(angleStep * i);
-    mesh.vertices[i].y  = cy + r * sin(angleStep * i);
+    mesh.vertices[i].x  = cx + r * cosd(angleStep * i);
+    mesh.vertices[i].y  = cy + r * sind(angleStep * i);
     mesh.edges[i].start = i;
     mesh.edges[i].end   = (i + 1) % maxN;
   }
@@ -148,10 +148,10 @@ void pitchMesh3D(Mesh3D* mesh, float theta) {
   // [ y'] = [      0   cos(t) -sin(t) ] [ y ]
   // [ z']   [      0   sin(t)  cos(t) ] [ z ]
   // x is horizontally across up so pitch keeps x-axis constant
-  float cy       = mesh->vertices[0].y;
-  float cz       = mesh->vertices[0].z;
-  float sintheta = sin(theta);
-  float costheta = cos(theta);
+  float cy       = mesh->centroid.y;
+  float cz       = mesh->centroid.z;
+  float sintheta = sind(theta);
+  float costheta = cosd(theta);
   for (unsigned int i = 0; i < mesh->numVertices; ++i) {
     Vec3 vertex         = mesh->vertices[i];
     float y             = vertex.y - cy;
@@ -167,10 +167,10 @@ void rollMesh3D(Mesh3D* mesh, float theta) {
   // [ y'] = [  sin(t)  cos(t)      0  ] [ y ]
   // [ z']   [      0       0       1  ] [ z ]
   // z is out of the screen roll keeps z-axis constant
-  float cx       = mesh->vertices[0].x;
-  float cy       = mesh->vertices[0].y;
-  float sintheta = sin(theta);
-  float costheta = cos(theta);
+  float cx       = mesh->centroid.x;
+  float cy       = mesh->centroid.y;
+  float sintheta = sind(theta);
+  float costheta = cosd(theta);
   for (unsigned int i = 0; i < mesh->numVertices; ++i) {
     Vec3 vertex         = mesh->vertices[i];
     float x             = vertex.x - cx;
@@ -188,8 +188,8 @@ void yawMesh3D(Mesh3D* mesh, float theta) {
   // y is vertically up so yaw keeps y-axis constant
   float cx       = mesh->centroid.x;
   float cz       = mesh->centroid.z;
-  float sintheta = sin(theta);
-  float costheta = cos(theta);
+  float sintheta = sind(theta);
+  float costheta = cosd(theta);
   for (unsigned int i = 0; i < mesh->numVertices; ++i) {
     Vec3 vertex         = mesh->vertices[i];
     float x             = vertex.x - cx;
@@ -197,6 +197,18 @@ void yawMesh3D(Mesh3D* mesh, float theta) {
     mesh->vertices[i].x = ((costheta * x) + (sintheta * z)) + cx;
     mesh->vertices[i].z = ((-sintheta * x) + (costheta * z)) + cz;
   }
+}
+
+void centerMesh3D(Mesh3D* mesh) {
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 vertex       = mesh->vertices[i];
+    mesh->vertices[i] = (Vec3){
+        vertex.x - (mesh->centroid.x - 32),  // FIXME: magic number
+        vertex.y - (mesh->centroid.y - 32),  // FIXME: magic number
+        vertex.z,
+    };
+  }
+  mesh->centroid = centroidMesh3D(mesh);
 }
 
 Mesh3D cuboidMesh(int x, int y, int z, int w, int h, int d) {
@@ -274,9 +286,9 @@ Mesh3D sphereMesh(int cx, int cy, int cz, int r, int n) {
     for (int j = 0; j < n; ++j) {
       float lat                         = 180.0f * ((float)i / n);
       float lon                         = 360.0f * ((float)j / n);
-      mesh.vertices[mesh.numVertices].x = cx + (r * sin(lat) * cos(lon));
-      mesh.vertices[mesh.numVertices].y = cy + (r * cos(lat));
-      mesh.vertices[mesh.numVertices].z = cz + (r * sin(lat) * sin(lon));
+      mesh.vertices[mesh.numVertices].x = cx + (r * sind(lat) * cosd(lon));
+      mesh.vertices[mesh.numVertices].y = cy + (r * cosd(lat));
+      mesh.vertices[mesh.numVertices].z = cz + (r * sind(lat) * sind(lon));
       ++mesh.numVertices;
 
       // Longitude edges
