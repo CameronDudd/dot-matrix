@@ -5,3 +5,4 @@ ColumnLimit: 160
 AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
 AllowShortFunctionsOnASingleLine: Empty
+PointerAlignment: Left
