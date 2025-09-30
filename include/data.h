@@ -94,5 +94,6 @@ typedef struct {
 
 PolyLine readPolyData(const uint8_t* start, const uint8_t* end);
 Mesh2D polyData2Mesh2D(const uint8_t* start, const uint8_t* end);
+Mesh3D polyData2Mesh3D(const uint8_t* start, const uint8_t* end, float depth);
 
 #endif  // DATA_H
