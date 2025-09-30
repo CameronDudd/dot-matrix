@@ -9,7 +9,24 @@
 #include "vec.h"
 
 // 2D
-int pointInTriangleMesh2D(Mesh2D *mesh, Vec2 p) {
+Vec2 centroidMesh2D(Mesh2D* mesh) {
+  float meanX     = 0.0f;
+  unsigned int nX = 0;
+  float meanY     = 0.0f;
+  unsigned int nY = 0;
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec2 v = mesh->vertices[i];
+    meanX  = ((meanX * nX) + v.x) / (nX + 1);
+    meanY  = ((meanY * nY) + v.y) / (nY + 1);
+    ++nX, ++nY;
+  }
+  return (Vec2){
+      .x = meanX,
+      .y = meanY,
+  };
+}
+
+int pointInTriangleMesh2D(Mesh2D* mesh, Vec2 p) {
   Vec2 a = {
       .x = mesh->vertices[0].x,
       .y = mesh->vertices[0].y,
@@ -28,7 +45,7 @@ int pointInTriangleMesh2D(Mesh2D *mesh, Vec2 p) {
   return (sideAB == sideBC) && (sideBC == sideCA);
 }
 
-void rotateMesh2D(Mesh2D *mesh, float theta) {
+void rotateMesh2D(Mesh2D* mesh, float theta) {
   // Rotating a point round the origin
   // [ x']   [ cos(t) -sin(t) ] [ x ]
   //       =
@@ -104,7 +121,28 @@ Mesh2D regularNGonMesh(int cx, int cy, int r, int n) {
 }
 
 // 3D
-void pitchMesh3D(Mesh3D *mesh, float theta) {
+Vec3 centroidMesh3D(Mesh3D* mesh) {
+  float meanX     = 0.0f;
+  unsigned int nX = 0;
+  float meanY     = 0.0f;
+  unsigned int nY = 0;
+  float meanZ     = 0.0f;
+  unsigned int nZ = 0;
+  for (unsigned int i = 0; i < mesh->numVertices; ++i) {
+    Vec3 v = mesh->vertices[i];
+    meanX  = ((meanX * nX) + v.x) / (nX + 1);
+    meanY  = ((meanY * nY) + v.y) / (nY + 1);
+    meanZ  = ((meanZ * nZ) + v.z) / (nZ + 1);
+    ++nX, ++nY, ++nZ;
+  }
+  return (Vec3){
+      .x = meanX,
+      .y = meanY,
+      .z = meanZ,
+  };
+}
+
+void pitchMesh3D(Mesh3D* mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
   // [ x']   [      1       0       0  ] [ x ]
   // [ y'] = [      0   cos(t) -sin(t) ] [ y ]
@@ -123,7 +161,7 @@ void pitchMesh3D(Mesh3D *mesh, float theta) {
   }
 }
 
-void rollMesh3D(Mesh3D *mesh, float theta) {
+void rollMesh3D(Mesh3D* mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
   // [ x']   [  cos(t) -sin(t)      0  ] [ x ]
   // [ y'] = [  sin(t)  cos(t)      0  ] [ y ]
@@ -142,14 +180,14 @@ void rollMesh3D(Mesh3D *mesh, float theta) {
   }
 }
 
-void yawMesh3D(Mesh3D *mesh, float theta) {
+void yawMesh3D(Mesh3D* mesh, float theta) {
   // https://en.wikipedia.org/wiki/Rotation_matrix
   // [ x']   [  cos(t)      0   sin(t) ] [ x ]
   // [ y'] = [      0       1       0  ] [ y ]
   // [ z']   [ -sin(t)      0   cos(t) ] [ z ]
   // y is vertically up so yaw keeps y-axis constant
-  float cx       = mesh->vertices[0].x;
-  float cz       = mesh->vertices[0].z;
+  float cx       = mesh->centroid.x;
+  float cz       = mesh->centroid.z;
   float sintheta = sin(theta);
   float costheta = cos(theta);
   for (unsigned int i = 0; i < mesh->numVertices; ++i) {
