@@ -80,7 +80,7 @@ void usart2Printf(const char *fmt, ...) {
   for (const char *p = fmt; *p; ++p) {
     if (*p == '%' && *(p + 1)) {
       ++p;
-      if (*p == 'd') {
+      if ((*p == 'd') || (*p == 'i')) {
         int val = va_arg(args, int);
         for (const char *c = itoa(val); *c != '\0'; ++c) {
           usart2TxChar(*c);
