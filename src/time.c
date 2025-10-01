@@ -10,7 +10,9 @@
 uint32_t sysclk             = 16000000;  // Default sysclk from HSI 16MHz
 volatile uint32_t currentMs = 0;
 
-void SysTick_Handler(void) { ++currentMs; }
+void SysTick_Handler(void) {
+  ++currentMs;
+}
 
 void clockInit(void) {
   // HSI     - High Speed Internal Oscillator
@@ -100,6 +102,12 @@ void sleepUs(uint32_t us) {
   }
 }
 
-uint32_t epochS(void) { return currentMs / 1000; }
-uint32_t epochMs(void) { return currentMs; }
-uint32_t epochUs(void) { return TIM2->CNT; }
+uint32_t epochS(void) {
+  return currentMs / 1000;
+}
+uint32_t epochMs(void) {
+  return currentMs;
+}
+uint32_t epochUs(void) {
+  return TIM2->CNT;
+}
